@@ -22,3 +22,28 @@ Please update if I leave anything out.
 * type "git push origin" and name of your branch to push your changes to the github repo
 * type "git checkout master" to return to the master branch
 * type "exit" to exit
+
+## Getting Started
+
+
+## Prerequisites
+
+
+## Running the tests
+
+
+## Data sets
+* Beers.csv 2410 craft beers from US breweries
+* Breweries.csv 558 US breweries
+
+## Authors
+* Rajat Chandna (coder/data analyst)
+  rchandna@mail.smu.edu
+* Andy Ho (coder/ data analyst)
+  atho@mail.smu.edu
+* An Nguyen (repo maintanance/README/Codebook)
+  anguyen2@mail.smu.edu
+* Jodi Pafford (Editor)
+  jpafford@mail.smu.edu
+* Tori Wheelis (Editor)
+  twheelis@mail.smu.edu
