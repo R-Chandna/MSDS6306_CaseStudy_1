@@ -1,0 +1,27 @@
+MSDS6306_CaseStudy_1
+Southern Methodist University, MSDS
+
+Rajat Chandna (coder/data analyst) rchandna@mail.smu.edu
+Andy Ho (coder/ data analyst) atho@mail.smu.edu
+An Nguyen (repo maintanance/README/Codebook) anguyen2@mail.smu.edu
+Jodi Pafford (Editor) jpafford@mail.smu.edu
+Tori Wheelis (Editor) twheelis@mail.smu.edu
+
+Data set of 2410 craft beers from US breweries and 558 US breweries obtained from Dr. Jacquelyn Cheun from the Masters of Science in Data Science of the Southern Methodist University.
+
+CODEBOOK FOR CRAFT BEERS (Beers.csv)
+VARIABLE NAME 	- POSITION 	- VARIABLE 				- 
+Name		- 1		- Name of beer				
+Beer_ID		- 2 		- Beer's ID number
+ABV		- 3		- Alcohol by volume
+IBU		- 4		- International bitterness units
+Breweriy_id   	- 5		- Beer's brewery's ID
+Style	 	- 6		- Style of beer
+Ounces	 	- 7		- Volume of beer per bottle in ounces
+
+CODEBOOK FOR US BREWERIES (Breweries.csv)
+VARIABLE NAME 	- POSITION 	- VARIABLE
+Brew_ID		- 1		- Brewery's ID
+Name		- 2		- Name of brewery
+City		- 3		- City of brewery's location
+State		- 4		- State of brewery's locaion (in standard post office state abbreviations)
