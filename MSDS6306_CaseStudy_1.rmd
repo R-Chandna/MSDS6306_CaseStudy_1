@@ -1,0 +1,9 @@
+---
+title: "Case Study 1"
+author: "Rajat Chandna, Andy Ho, An Nguyen, Jodi Pafford, Tori Wheelis"
+date: "June 6, 2018"
+output:
+  html_document:
+    keep_md: yes
+---
+
