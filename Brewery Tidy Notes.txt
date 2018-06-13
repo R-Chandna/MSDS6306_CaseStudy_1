@@ -1,0 +1,23 @@
+Observations from Visual Inspection of Breweries.csv
+
+Possible Brewery Name Duplicates or Discrepancies:
+	- Against the Grain 		 	|  Against The Grain
+	- Goose Island Brewery Company		|  Goose Island Brewing Company
+	- Angry Minnow  			|   Angry Minnow Brewing Company
+	- Hops & Grain Brewery  		| Hops & Grains Brewing Company
+	- Grey Sail Brewing Company  		|  Gray Sail Brewing of Rhode Island
+	- Lucette Brewing Company
+	- Blackrocks Brewery
+	- Sly Fox Brewing Company
+	- Summit Brewing Company
+	- Blue Mountain Brewery
+	- Oskar Blues Brewery
+	- Otter Creek Brewery
+
+Possible City Name Duplicates or Discrepancies:
+	- Mount Pleasant   	|  Mt. Pleasant
+	- St Paul  		|  St. Paul
+	- Menominee  		|  Menominie
+	
+Possible State Discrepancy:
+	- Marquette MI		|    Marquette MA   for Blackrocks Brewery
