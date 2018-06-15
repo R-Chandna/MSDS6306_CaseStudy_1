@@ -7,3 +7,9 @@ output:
     keep_md: yes
 ---
 
+
+```{r}
+Beers <- read.csv("Beers.csv") # read in Beers data set.
+#remove all duplicates, only if name, abv, ibu, brewery id, style and volume are the same.
+UniqueBeers <- Beers[-which(duplicated(Beers$Name) & duplicated(Beers$ABV) & duplicated(Beers$IBU) & duplicated(Beers$Brewery_id) & duplicated(Beers$Style) & duplicated(Beers$Ounces)),]
+```
