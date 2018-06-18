@@ -37,13 +37,13 @@ Please update if I leave anything out.
 * Breweries.csv 558 US breweries
 
 ## Authors
-* Rajat Chandna (coder/data analyst)
+* Rajat Chandna
   rchandna@mail.smu.edu
-* Andy Ho (coder/ data analyst)
+* Andy Ho
   atho@mail.smu.edu
-* An Nguyen (repo maintanance/README/Codebook)
+* An Nguyen
   anguyen2@mail.smu.edu
-* Jodi Pafford (Editor)
+* Jodi Pafford
   jpafford@mail.smu.edu
-* Tori Wheelis (Editor)
+* Tori Wheelis
   twheelis@mail.smu.edu
