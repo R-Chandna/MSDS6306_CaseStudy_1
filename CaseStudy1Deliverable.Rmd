@@ -1,0 +1,65 @@
+---
+title: "CaseStudy1Deliverable"
+author: "Rajat Chandna, Andy Ho, An Nguyen, Jodi Pafford, and Tori Wheelis"
+date: "June 17, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Introduction
+
+The purpose of this study is to help "Company Name" assess the market size and competition on where the next "Company Name" brewery should be built and what type of beer it should brew. The data used in this study was derived from "Author of Data" and includes 2410 US craft beers from 558 US breweries. (see Codebook for specific details)
+
+#Guiding Questions
+
+###Breweries per state
+The 558 breweries are spread among "# of States".  The most breweries are located in "state".  
+
+```{rQ1, echo = TRUE}
+
+```
+
+###First 6, Last 6
+Some of the observations are seen below.  The data gathered includes 
+
+```{rQ2, echo = TRUE}
+
+```
+
+###Number of NA's
+Some of the data was incomplete.  A summary of incomplete information is shown below.
+
+```{rQ3, echo = TRUE}
+
+```
+
+###Median Alcohol Content & International Bitterness Unti (IBU) for each state
+The median amount of alcohol content and IBUs in each state is listed below. "Add Info about scatterplot"
+```{rQ4, echo = TRUE}
+
+```
+
+###Maximum Alcoholic (ABV) and Most Bitter(IBU) Beer
+Based on the information gathered "Name of state" has the highest alcohol by volumne (ABV) and "Name of state" has the highest rating of International Bitterness Units (IBU) compared to the other states.
+```{rQ5, echo = TRUE}
+
+```
+
+###ABV Summary
+"Insert data about Min, Max, quartiles, etc."
+```{rQ6, echo = TRUE}
+
+```
+
+###IBU and ABV relationship
+"Insert data and description of relationshipbetween IBU and ABV"
+```{rQ7, echo = TRUE}
+
+```
+
+#Summary
+
+
