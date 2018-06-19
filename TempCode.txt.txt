@@ -14,7 +14,7 @@ tempListVec <- character()
 for(i in 1:length(uniTempVec)){
   subTobeSearched <- substr(uniTempVec[i], 1,3)
   subTobeSearched <- paste0("^",subTobeSearched)
-  tempVec <- unique(grep(subTobeSearched, uniTempVec, value = T))
+  tempVec <- unique(grep(subTobeSearched, uniTempVec, ignore.case = T, value = T))
   if(length(tempVec) > 1){
     tempListVec <- c(tempListVec, paste(" ", tempVec, collapse = " "))
   }
@@ -29,8 +29,7 @@ for(i in 1:length(unitempListVec)){
     temp3Vec <- c(temp3Vec,unique(as.character(BrDF[BrDF$City == temp2Vec[j], "State"])))
   }
   if(length(unique(temp3Vec)) != length(temp3Vec)){
-    print(unitempListVec[i])
-    print(temp3Vec)
+    print(as.data.frame(sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, "State"]))))
   }
 }
 
@@ -49,7 +48,7 @@ tempListVec <- character()
 for(i in 1:length(uniTempVec)){
   subTobeSearched <- substr(uniTempVec[i], nchar(uniTempVec[i]) - 3, nchar(uniTempVec[i]))
   subTobeSearched <- paste0(subTobeSearched,"$")
-  tempVec <- unique(grep(subTobeSearched, uniTempVec, value = T))
+  tempVec <- unique(grep(subTobeSearched, uniTempVec,ignore.case = T, value = T))
   if(length(tempVec) > 1){
     tempListVec <- c(tempListVec, paste(" ", tempVec, collapse = " "))
   }
@@ -64,8 +63,7 @@ for(i in 1:length(unitempListVec)){
     temp3Vec <- c(temp3Vec,unique(as.character(BrDF[BrDF$City == temp2Vec[j], "State"])))
   }
   if(length(unique(temp3Vec)) != length(temp3Vec)){
-    print(unitempListVec[i])
-    print(temp3Vec)
+    print(as.data.frame(sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, "State"]))))
   }
 }
 
@@ -82,7 +80,7 @@ tempListVec <- character()
 for(i in 1:length(uniTempVec)){
   subTobeSearched <- substr(uniTempVec[i], 1,3)
   subTobeSearched <- paste0("^",subTobeSearched)
-  tempVec <- unique(grep(subTobeSearched, uniTempVec, value = T))
+  tempVec <- unique(grep(subTobeSearched, uniTempVec,ignore.case = T, value = T))
   if(length(tempVec) > 1){
     tempListVec <- c(tempListVec, paste(" ", tempVec, collapse = " "))
   }
@@ -97,6 +95,6 @@ for(i in 1:length(unitempListVec)){
     temp3Vec <- c(temp3Vec,unique(paste(BrDF[BrDF$Name == temp2Vec[j], "City"], BrDF[BrDF$Name == temp2Vec[j], "State"], sep = "+")))
   }
   if(length(unique(temp3Vec)) != length(temp3Vec)){
-    print((cbind(temp2Vec, temp3Vec)))
+    print(as.data.frame(sapply(temp2Vec, function(x) paste(BrDF[BrDF$Name == x, "City"], BrDF[BrDF$Name == x, "State"], sep = "+"))))
   }
 }
