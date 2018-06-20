@@ -6,9 +6,6 @@ grep("^..[[:punct:][:blank:]]+",BrDF$City, value = T)
 BrDF$City <- gsub("^St[[:punct:][:blank:]]+","Saint ",BrDF$City)
 BrDF$City <- gsub("^Mt[[:punct:][:blank:]]+","Mount ",BrDF$City)
 
-function doesSubStringExist(x){
-  
-}
 uniTempVec <- unique(BrDF$City)
 tempListVec <- character()
 for(i in 1:length(uniTempVec)){
@@ -35,7 +32,7 @@ for(i in 1:length(unitempListVec)){
 
 ## Do corrections to City Names or State Names
 # COrrections 
-BrDF[BrDF$City == "Menominie", 'City'] <- "Menomonie"
+BrDF[BrDF$City == "Menominee", 'City'] <- "Menomonie"
 # Remove leading white space from State col
 BrDF$State <- trimws(BrDF$State, "l")
 # City Marquette is in MI and not MA
@@ -71,7 +68,7 @@ for(i in 1:length(unitempListVec)){
 
 as.data.frame(table(BrDF$Name))[as.data.frame(table(BrDF$Name))$Freq > 1, ]
 # Remove Dups if needed
-BrDF <- BrDF[!duplicated(BrDF[,c("Name","City","State")]), ]
+#BrDF <- BrDF[!duplicated(BrDF[,c("Name","City","State")]), ]
 
 ## Look for duplicates in Brewry Name
 ## Match first 3
@@ -98,3 +95,15 @@ for(i in 1:length(unitempListVec)){
     print(as.data.frame(sapply(temp2Vec, function(x) paste(BrDF[BrDF$Name == x, "City"], BrDF[BrDF$Name == x, "State"], sep = "+"))))
   }
 }
+
+# Do corrections here
+BrDF[BrDF$Name == "Against the Grain Brewery", "Name"] <- "Against The Grain Brewery"
+BrDF[BrDF$Name == "Grey Sail Brewing of Rhode Island", "Name"] <- "Grey Sail Brewing Company"
+BrDF[BrDF$Name == "Hops & Grains Brewing Company", "Name"] <- "Hops & Grain Brewery"
+BrDF[BrDF$Name == "Goose Island Brewery Company", "Name"] <- "Goose Island Brewing Company"
+BrDF[BrDF$Name == "Goodlife Brewing Co.", "Name"] <- "Good Life Brewing Company"
+BrDF[BrDF$Name == "Catawba Brewing Company", "Name"] <- "Catawba Valley Brewing Company"
+BrDF[BrDF$Name == "Angry Minnow", "Name"] <- "Angry Minnow Brewing Company"
+
+
+write.csv(BrDF, file = "CleanedBreweryData.csv", row.names = F)
