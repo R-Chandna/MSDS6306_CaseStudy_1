@@ -5,6 +5,7 @@ date: "June 19, 2018"
 output: html_document
 ---
 
+
 ```{r}
 #Q2 - Merge Beer and Breweries files by Brew_ID (Assumes Beers.csv file has renamed Brewery_ID to Brew_ID) and prints the first/last 6 observations.
 beers <- read.csv("Beers.csv", header = TRUE)
@@ -18,4 +19,11 @@ write.csv(master.file, file = "masterfile.csv", row.names = FALSE)
 ```{r}
 #Q3 - Suming the NA's for each column
 colSums(is.na(master.file))
+```
+
+```{r}
+#Q1 - How many breweries in each State?
+state.count <- as.data.frame(table(master.file$State))
+names(state.count) <- c("State", "Brewery_Count")
+state.count
 ```
