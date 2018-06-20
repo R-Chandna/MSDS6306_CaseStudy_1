@@ -14,7 +14,7 @@ Beers <- read.csv("Beers.csv", header=TRUE, fileEncoding = 'UTF-8')
 
 UniqueBeers <- Beers[!duplicated(Beers[c(1,3,4,5,6,7)]),]
 
-byBrewery <- split(UniqueBeers, UniqueBeers$Brewery_id) #Group beers by Brewery
+byBrewery <- split(UniqueBeers, list(UniqueBeers$Ounces, UniqueBeers$Brewery_id)) #Group beers by Brewery and size
 
 # Match First 3 Chars
 for(i in 1:length(byBrewery)){
@@ -51,7 +51,7 @@ for(i in 1:length(byBrewery)){
   tempListVec <- character()
   for(i in 1:length(uniTempVec)){
     subTobeSearched <- substr(uniTempVec[i], nchar(uniTempVec[i]) - 3, nchar(uniTempVec[i]))
-    subTobeSearched <- paste0("^",subTobeSearched)
+    subTobeSearched <- paste0(subTobeSearched, "$")
     tempVec <- unique(grep(subTobeSearched, uniTempVec, ignore.case = T, value = T))
     if(length(tempVec) > 1){
       tempListVec <- c(tempListVec, paste(" ", tempVec, collapse = " "))
