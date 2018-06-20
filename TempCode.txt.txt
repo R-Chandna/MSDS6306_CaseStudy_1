@@ -33,6 +33,7 @@ for(i in 1:length(unitempListVec)){
 ## Do corrections to City Names or State Names
 # COrrections 
 BrDF[BrDF$City == "Menominee", 'City'] <- "Menomonie"
+BrDF[BrDF$City == "Menominie", 'City'] <- "Menomonie"
 # Remove leading white space from State col
 BrDF$State <- trimws(BrDF$State, "l")
 # City Marquette is in MI and not MA
