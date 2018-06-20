@@ -1,0 +1,13 @@
+Ranger IPA, Ranger IPA (Current)					Same, ABU, IBU, BreweryID, Style and Ounces
+Shift, Shift (1)							Same, ABU, IBU, BreweryID, Style and Ounces
+Point Special (Current), Point Special					Same, ABU, IBU, BreweryID, Style and Ounces
+Cherry Ale; Cherry Ale (1)						Same, ABU, IBU, BreweryID, Style and Ounces
+Pleasure Town, Pleasure Town IPA					Same, ABU, IBU, BreweryID, Style and Ounces
+Farmer Ted's Cream Ale, Farmer Ted's Farmhouse Cream Ale		Same, ABU, IBU, BreweryID, Style and Ounces
+Dry Cider, Dry Hard Cider						Same, ABU, IBU, BreweryID, Style and Ounces
+Abbey's Single (2015- ), Abbey's Single Ale (Current)			Same, ABU, IBU, BreweryID, Style and Ounces.  Is (2015- ) consider current? 
+Troegenator, Troegenator Doublebock					Same, ABU, BreweryID, Style and Ounces. Troegenator missing IBU
+805 Blonde Ale, 805							Same ABV, BreweryID, Style and Ounces.  805 Blonde Ale missing IBU
+Tallgrass Pub Ale, Tallgrass Ale					is Pub Ale and Ale different?
+Long Trail Ale,	 Long Trail Ale (1)					Same, ABU, IBU, BreweryID and Ounces.  (1) Altbier and other is American Amber/ Red Ale	
+Hipster Ale (Two Roads Brewing), Hipster Ale (Westbrook Brewing)	Same Brewery ID
