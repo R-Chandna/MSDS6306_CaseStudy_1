@@ -8,8 +8,8 @@ output: html_document
 
 ```{r}
 #Q2 - Merge Beer and Breweries files by Brew_ID (Assumes Beers.csv file has renamed Brewery_ID to Brew_ID) and prints the first/last 6 observations.
-beers <- read.csv("Beers.csv", header = TRUE)
-breweries <- read.csv("Breweries.csv", header = TRUE)
+beers <- read.csv("CleanedBeerData.csv", header = TRUE)
+breweries <- read.csv("CleanedBreweryData.csv", header = TRUE)
 master.file <- Reduce(function(beers, breweries) merge(beers, breweries, by="Brew_ID"), list(beers, breweries))
 head(master.file,6)
 tail(master.file,6)
