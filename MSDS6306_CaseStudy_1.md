@@ -103,6 +103,12 @@ UniqueBeers <- subset(UniqueBeers, Name != "Hipster Ale (Westbrook Brewing)")
 levels(UniqueBeers$Name)[levels(UniqueBeers$Name) == "Hipster Ale (Two Roads Brewing)"] = "Hipster Ale"
 ```
 
+```r
+#Add code to change Brewery_ID column to match the Brews file and create CSV output of clean data.
+colnames(UniqueBeers)[colnames(UniqueBeers)=="Brewery_id"] <- "Brew_ID"
+write.csv(UniqueBeers, file="CleanedBeerData.csv", row.names = F)
+```
+
 ####Tidying Breweries Data
 
 ```r

@@ -205,6 +205,9 @@ UniqueBeers &lt;- subset(UniqueBeers, Name != &quot;Bender&quot;)
 UniqueBeers &lt;- subset(UniqueBeers, Name != &quot;Hipster Ale (Westbrook Brewing)&quot;)
 #rename Hipster Ale (Two Roads Brewing) to Hipster Ale, Two Roads Brewing does not brew Hipster Ale
 levels(UniqueBeers$Name)[levels(UniqueBeers$Name) == &quot;Hipster Ale (Two Roads Brewing)&quot;] = &quot;Hipster Ale&quot;</code></pre>
+<pre class="r"><code>#Add code to change Brewery_ID column to match the Brews file and create CSV output of clean data.
+colnames(UniqueBeers)[colnames(UniqueBeers)==&quot;Brewery_id&quot;] &lt;- &quot;Brew_ID&quot;
+write.csv(UniqueBeers, file=&quot;CleanedBeerData.csv&quot;, row.names = F)</code></pre>
 </div>
 <div id="tidying-breweries-data" class="section level4">
 <h4>Tidying Breweries Data</h4>
