@@ -125,16 +125,87 @@ $(document).ready(function () {
 </div>
 
 
-<pre class="r"><code># read in Beers data set with correct character formatting.
-Beers &lt;- read.csv(&quot;Beers.csv&quot;, header=TRUE, fileEncoding = 'UTF-8') 
+<div id="tidying-beers-data" class="section level4">
+<h4>Tidying Beers Data</h4>
+<pre class="r"><code>#read in Beers data set with correct character formatting.
+Beers &lt;- read.csv(&quot;Beers.csv&quot;, header=TRUE, fileEncoding = 'UTF-8')</code></pre>
+<pre class="r"><code>#Remove duplicate beers if ALL columns but the Beer ID are the same. 
+UniqueBeers &lt;- Beers[!duplicated(Beers[c(1,3,4,5,6,7)]),]</code></pre>
+<pre class="r"><code>#Group beers by Brewery and Size
+if(FALSE){
+  byBrewery &lt;- split(UniqueBeers, list(UniqueBeers$Ounces, UniqueBeers$Brewery_id))
 
+# Match First 3 Chars
+for(i in 1:length(byBrewery)){
+    uniTempVec &lt;- unique(byBrewery[[i]]$Name)
+    tempListVec &lt;- character()
+    for(i in 1:length(uniTempVec)){
+      subTobeSearched &lt;- substr(uniTempVec[i], 1,3)
+      subTobeSearched &lt;- paste0(&quot;^&quot;,subTobeSearched)
+      tempVec &lt;- unique(grep(subTobeSearched, uniTempVec, ignore.case = T, value = T))
+      if(length(tempVec) &gt; 1){
+        tempListVec &lt;- c(tempListVec, paste(&quot; &quot;, tempVec, collapse = &quot; &quot;))
+      }
+    }
 
-#remove all duplicates, only if name, abv, ibu, brewery id, style and volume are the same.
-UniqueBeers &lt;- Beers[-which(duplicated(Beers$Name) &amp; duplicated(Beers$ABV) &amp; duplicated(Beers$IBU) &amp; duplicated(Beers$Brewery_id) &amp; duplicated(Beers$Style) &amp; duplicated(Beers$Ounces)),]
+    unitempListVec &lt;- unique(tempListVec)
+    for(i in 1:length(unitempListVec)){
+      temp2Vec &lt;- as.vector(unlist(strsplit(trimws(unitempListVec[i], &quot;l&quot;), &quot;   &quot;)))
+      if(length(temp2Vec) &gt; 1){
+        for(i in 1:length(temp2Vec)){
+          cat(temp2Vec[i], file = &quot;./First3matches.csv&quot;, append = T)
+          if(i != length(temp2Vec)){
+            cat(&quot;, &quot;, file = &quot;./First3matches.csv&quot;, append = T)
+          }  
+        }
+        cat(&quot;\n&quot;, file = &quot;./First3matches.csv&quot;, append = T)
+      }
+    }
+  }
 
+# Match Last 3 chars
+  for(i in 1:length(byBrewery)){
+    uniTempVec &lt;- as.character(unique(byBrewery[[i]]$Name))
+    tempListVec &lt;- character()
+    for(i in 1:length(uniTempVec)){
+      subTobeSearched &lt;- substr(uniTempVec[i], nchar(uniTempVec[i]) - 3, nchar(uniTempVec[i]))
+      subTobeSearched &lt;- paste0(subTobeSearched, &quot;$&quot;)
+      tempVec &lt;- unique(grep(subTobeSearched, uniTempVec, ignore.case = T, value = T))
+      if(length(tempVec) &gt; 1){
+        tempListVec &lt;- c(tempListVec, paste(&quot; &quot;, tempVec, collapse = &quot; &quot;))
+      }
+    }
 
-#Keeping An's code for UniqueBeers but adding Jodi's as UniqueBeer2 in case An's version is correct. The code below keeps everything is not a duplicate in Name, ABV, IBU, Brewery_ID, Style and Ounces.
-UniqueBeers2 &lt;- Beers[!duplicated(Beers[c(1,3,4,5,6,7)]),]</code></pre>
+    unitempListVec &lt;- unique(tempListVec)
+    for(i in 1:length(unitempListVec)){
+      temp2Vec &lt;- as.vector(unlist(strsplit(trimws(unitempListVec[i], &quot;l&quot;), &quot;   &quot;)))
+      if(length(temp2Vec) &gt; 1){
+        for(i in 1:length(temp2Vec)){
+          cat(temp2Vec[i], file = &quot;./Last3matches.csv&quot;, append = T)
+          if(i != length(temp2Vec)){
+            cat(&quot;, &quot;, file = &quot;./Last3matches.csv&quot;, append = T)
+          }  
+        }
+        cat(&quot;\n&quot;, file = &quot;./Last3matches.csv&quot;, append = T)
+      }
+    }
+  }
+}</code></pre>
+<pre class="r"><code>#Removed beers with identical ABU, IBU, Brewery_id, Ounces but slight differences in name
+UniqueBeers &lt;- subset(UniqueBeers, Name != &quot;Ranger IPA (Current)&quot;)
+UniqueBeers &lt;- subset(UniqueBeers, Name != &quot;Shift (1)&quot;)
+UniqueBeers &lt;- subset(UniqueBeers, Name != &quot;Point Special (Current)&quot;)
+UniqueBeers &lt;- subset(UniqueBeers, Name != &quot;Cherry Ale (1)&quot;)
+UniqueBeers &lt;- subset(UniqueBeers, Name != &quot;Pleasure Town&quot;)
+UniqueBeers &lt;- subset(UniqueBeers, Name != &quot;Farmer Ted's Cream Ale&quot;)
+UniqueBeers &lt;- subset(UniqueBeers, Name != &quot;Dry Cider&quot;)
+UniqueBeers &lt;- subset(UniqueBeers, Name != &quot;Abbey's Single (2015- )&quot;)
+UniqueBeers &lt;- subset(UniqueBeers, Name != &quot;Triomphe&quot;)
+UniqueBeers &lt;- subset(UniqueBeers, Name != &quot;Bender&quot;)
+UniqueBeers &lt;- subset(UniqueBeers, Name != &quot;Hipster Ale (Westbrook Brewing)&quot;)
+#rename Hipster Ale (Two Roads Brewing) to Hipster Ale, Two Roads Brewing does not brew Hipster Ale
+levels(UniqueBeers$Name)[levels(UniqueBeers$Name) == &quot;Hipster Ale (Two Roads Brewing)&quot;] = &quot;Hipster Ale&quot;</code></pre>
+</div>
 <div id="tidying-breweries-data" class="section level4">
 <h4>Tidying Breweries Data</h4>
 <pre class="r"><code>#Tidying Breweries.csv Section. Completed by Rajat and Andy
@@ -209,7 +280,336 @@ unique(breweries[grep(&quot;[.]&quot;, breweries$City), &quot;City&quot;])</code
 ## [43] Sheffield           Silverton           Stevensville       
 ## [46] Smithton           
 ## 384 Levels: Abingdon Abita Springs Ada Afton Airway Heights ... York</code></pre>
-<pre class="r"><code>#With State and City cleaned up, we check for duplicates breweries by matching the name, each's city, than state.  Still in process.</code></pre>
+<pre class="r"><code>#With State and City cleaned up, we check for duplicates breweries by matching the name, each's city, than state. 
+BrDF &lt;- read.csv(&quot;Breweries.csv&quot;, header = T, stringsAsFactors = F)
+
+grep(&quot;[[:punct:]]&quot;,BrDF$City, value = T)</code></pre>
+<pre><code>## [1] &quot;St. Paul&quot;      &quot;Mt. Airy&quot;      &quot;Wilkes-Barre&quot;  &quot;St Mary's&quot;    
+## [5] &quot;St. John's&quot;    &quot;Fuquay-Varina&quot; &quot;Mt. Pleasant&quot;  &quot;O'Fallon&quot;</code></pre>
+<pre class="r"><code>grep(&quot;[[:punct:][:blank:]]+&quot;,BrDF$City, value = T)</code></pre>
+<pre><code>##   [1] &quot;San Diego&quot;           &quot;San Francisco&quot;       &quot;Grand Rapids&quot;       
+##   [4] &quot;Grand Rapids&quot;        &quot;Comstock Park&quot;       &quot;South Lyon&quot;         
+##   [7] &quot;Grand Rapids&quot;        &quot;Michigan City&quot;       &quot;Seven Points&quot;       
+##  [10] &quot;Kansas City&quot;         &quot;Stevens Point&quot;       &quot;San Diego&quot;          
+##  [13] &quot;San Francisco&quot;       &quot;Dripping Springs&quot;    &quot;East Fairfield&quot;     
+##  [16] &quot;Paso Robles&quot;         &quot;St. Paul&quot;            &quot;Saint Louis&quot;        
+##  [19] &quot;Brooklyn Center&quot;     &quot;San Antonio&quot;         &quot;St Petersburg&quot;      
+##  [22] &quot;Mt. Airy&quot;            &quot;San Francisco&quot;       &quot;Fort Collins&quot;       
+##  [25] &quot;Traverse City&quot;       &quot;East Windsor&quot;        &quot;Wilkes-Barre&quot;       
+##  [28] &quot;San Diego&quot;           &quot;Lone Tree&quot;           &quot;North Woodstock&quot;    
+##  [31] &quot;St Mary's&quot;           &quot;Stevens Point&quot;       &quot;St Paul&quot;            
+##  [34] &quot;Cold Spring&quot;         &quot;Baton Rouge&quot;         &quot;Salt Lake City&quot;     
+##  [37] &quot;Fort Worth&quot;          &quot;Traverse City&quot;       &quot;West Chester&quot;       
+##  [40] &quot;Garden City&quot;         &quot;White Salmon&quot;        &quot;New Orleans&quot;        
+##  [43] &quot;Fort Worth&quot;          &quot;Oklahoma City&quot;       &quot;Spring Lake&quot;        
+##  [46] &quot;Paw Paw&quot;             &quot;Oklahoma City&quot;       &quot;San Antonio&quot;        
+##  [49] &quot;San Diego&quot;           &quot;Farmers Branch&quot;      &quot;Cherry Hill&quot;        
+##  [52] &quot;Atlantic Highlands&quot;  &quot;Middleburg Heights&quot;  &quot;Lake Geneva&quot;        
+##  [55] &quot;Lake Havasu City&quot;    &quot;Los Angeles&quot;         &quot;College Station&quot;    
+##  [58] &quot;Plant City&quot;          &quot;Santa Cruz&quot;          &quot;Somerset Center&quot;    
+##  [61] &quot;South Austin&quot;        &quot;Mount Pleasant&quot;      &quot;Bridgewater Corners&quot;
+##  [64] &quot;South Deerfield&quot;     &quot;Mill Valley&quot;         &quot;Ridgefield Park&quot;    
+##  [67] &quot;Port Clinton&quot;        &quot;San Diego&quot;           &quot;Idaho Springs&quot;      
+##  [70] &quot;Salt Lake City&quot;      &quot;South Burlington&quot;    &quot;Virginia Beach&quot;     
+##  [73] &quot;Garden City&quot;         &quot;San Francisco&quot;       &quot;Black Mountain&quot;     
+##  [76] &quot;Saint Louis&quot;         &quot;Diamond Springs&quot;     &quot;St. John's&quot;         
+##  [79] &quot;Boynton Beach&quot;       &quot;South Bend&quot;          &quot;Green Bay&quot;          
+##  [82] &quot;San Luis Obispo&quot;     &quot;Fuquay-Varina&quot;       &quot;Lake Barrington&quot;    
+##  [85] &quot;San Francisco&quot;       &quot;Buena Vista&quot;         &quot;Midwest City&quot;       
+##  [88] &quot;Mt. Pleasant&quot;        &quot;Airway Heights&quot;      &quot;Santa Fe&quot;           
+##  [91] &quot;Ann Arbor&quot;           &quot;Eau Claire&quot;          &quot;San Diego&quot;          
+##  [94] &quot;Stevens Point&quot;       &quot;Saint Louis&quot;         &quot;Slippery Rock&quot;      
+##  [97] &quot;Santa Cruz&quot;          &quot;Traverse City&quot;       &quot;Royal Oak&quot;          
+## [100] &quot;Fort Collins&quot;        &quot;O'Fallon&quot;            &quot;Vadnais Heights&quot;    
+## [103] &quot;Half Moon Bay&quot;       &quot;San Diego&quot;           &quot;South San Francisco&quot;
+## [106] &quot;Jacksonville Beach&quot;  &quot;Tampa Bay&quot;           &quot;San Antonio&quot;        
+## [109] &quot;Spirit Lake&quot;         &quot;Gig Harbor&quot;          &quot;Des Moines&quot;         
+## [112] &quot;New York&quot;            &quot;Green Bay&quot;           &quot;Fort Wayne&quot;         
+## [115] &quot;Lake Havasu City&quot;    &quot;Colorado Springs&quot;    &quot;San Diego&quot;          
+## [118] &quot;Myrtle Beach&quot;        &quot;Santa Cruz&quot;          &quot;New York&quot;           
+## [121] &quot;Eau Claire&quot;          &quot;Abita Springs&quot;       &quot;Mammoth Lakes&quot;      
+## [124] &quot;Battle Creek&quot;        &quot;North Conway&quot;</code></pre>
+<pre class="r"><code>grep(&quot;^..[[:punct:][:blank:]]+&quot;,BrDF$City, value = T)</code></pre>
+<pre><code>## [1] &quot;St. Paul&quot;      &quot;St Petersburg&quot; &quot;Mt. Airy&quot;      &quot;St Mary's&quot;    
+## [5] &quot;St Paul&quot;       &quot;St. John's&quot;    &quot;Mt. Pleasant&quot;</code></pre>
+<pre class="r"><code>BrDF$City &lt;- gsub(&quot;^St[[:punct:][:blank:]]+&quot;,&quot;Saint &quot;,BrDF$City)
+BrDF$City &lt;- gsub(&quot;^Mt[[:punct:][:blank:]]+&quot;,&quot;Mount &quot;,BrDF$City)
+
+uniTempVec &lt;- unique(BrDF$City)
+tempListVec &lt;- character()
+for(i in 1:length(uniTempVec)){
+  subTobeSearched &lt;- substr(uniTempVec[i], 1,3)
+  subTobeSearched &lt;- paste0(&quot;^&quot;,subTobeSearched)
+  tempVec &lt;- unique(grep(subTobeSearched, uniTempVec, ignore.case = T, value = T))
+  if(length(tempVec) &gt; 1){
+    tempListVec &lt;- c(tempListVec, paste(&quot; &quot;, tempVec, collapse = &quot; &quot;))
+  }
+}
+
+unitempListVec &lt;- unique(tempListVec)
+temp3Vec &lt;- character()
+for(i in 1:length(unitempListVec)){
+  temp3Vec &lt;- character()
+  temp2Vec &lt;- as.vector(unlist(strsplit(trimws(unitempListVec[i], &quot;l&quot;), &quot;   &quot;)))
+  for (j in 1:length(temp2Vec)){
+    temp3Vec &lt;- c(temp3Vec,unique(as.character(BrDF[BrDF$City == temp2Vec[j], &quot;State&quot;])))
+  }
+  if(length(unique(temp3Vec)) != length(temp3Vec)){
+    print(as.data.frame(sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))))
+  }
+}</code></pre>
+<pre><code>##             sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Minneapolis                                                                  MN
+## Minnetonka                                                                   MN
+##                 sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## San Diego                                                                        CA
+## San Francisco                                                                    CA
+## San Antonio                                                                      TX
+## Santa Cruz                                                                       CA
+## Santee                                                                           CA
+## San Luis Obispo                                                                  CA
+## Santa Fe                                                                         NM
+##   Marquette Martinsville Marietta Marlborough
+## 1        MI           IN       GA          MA
+## 2        MA           IN       GA          MA
+##                 sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Brooklyn                                                                         NY
+## Brooklyn Center                                                                  MN
+## Broomfield                                                                       CO
+## Bronx                                                                            NY
+##              sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Westerly                                                                      RI
+## Weston                                                                        MO
+## West Chester                                                                  PA
+## Westminster                                                                   MA
+## Westfield                                                                     MA
+##   Newport New.Orleans Newburgh New.York Newburyport
+## 1      RI          LA       NY       NY          MA
+## 2      OR          LA       NY       NY          MA
+##           sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Lone Tree                                                                  CO
+## Longmont                                                                   CO
+##                 sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## North Woodstock                                                                  NH
+## Norfolk                                                                          VA
+## Northamtpon                                                                      MA
+## North Conway                                                                     NH
+##   Ashland Ashburn Asheville
+## 1      VA      VA        NC
+## 2      OR      VA        NC
+##           sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Tampa                                                                      FL
+## Tampa Bay                                                                  FL
+##           sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Lansdale                                                                   PA
+## Lancaster                                                                  PA
+##   Jackson Jacksonville Jacksonville.Beach
+## 1      WY           FL                 FL
+## 2      MS           FL                 FL
+##           sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Menominee                                                                  WI
+## Menominie                                                                  WI</code></pre>
+<pre class="r"><code>## Do corrections to City Names or State Names
+# COrrections 
+BrDF[BrDF$City == &quot;Menominee&quot;, 'City'] &lt;- &quot;Menomonie&quot;
+BrDF[BrDF$City == &quot;Menominie&quot;, 'City'] &lt;- &quot;Menomonie&quot;
+# Remove leading white space from State col
+BrDF$State &lt;- trimws(BrDF$State, &quot;l&quot;)
+# City Marquette is in MI and not MA
+BrDF[BrDF$City == &quot;Marquette&quot; &amp; BrDF$State == &quot;MA&quot;, 'State'] &lt;- &quot;MI&quot;</code></pre>
+<pre class="r"><code># Match Last 3 Chars
+uniTempVec &lt;- unique(BrDF$City)
+tempListVec &lt;- character()
+for(i in 1:length(uniTempVec)){
+  subTobeSearched &lt;- substr(uniTempVec[i], nchar(uniTempVec[i]) - 3, nchar(uniTempVec[i]))
+  subTobeSearched &lt;- paste0(subTobeSearched,&quot;$&quot;)
+  tempVec &lt;- unique(grep(subTobeSearched, uniTempVec,ignore.case = T, value = T))
+  if(length(tempVec) &gt; 1){
+    tempListVec &lt;- c(tempListVec, paste(&quot; &quot;, tempVec, collapse = &quot; &quot;))
+  }
+}
+
+unitempListVec &lt;- unique(tempListVec)
+temp3Vec &lt;- character()
+for(i in 1:length(unitempListVec)){
+  temp3Vec &lt;- character()
+  temp2Vec &lt;- as.vector(unlist(strsplit(trimws(unitempListVec[i], &quot;l&quot;), &quot;   &quot;)))
+  for (j in 1:length(temp2Vec)){
+    temp3Vec &lt;- c(temp3Vec,unique(as.character(BrDF[BrDF$City == temp2Vec[j], &quot;State&quot;])))
+  }
+  if(length(unique(temp3Vec)) != length(temp3Vec)){
+    print(as.data.frame(sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))))
+  }
+}</code></pre>
+<pre><code>##   Louisville Evansville Martinsville Bargersville Troutville Roseville
+## 1         KY         IN           IN           IN         VA        MN
+## 2         KY         IN           IN           IN         VA        MN
+##   Warrenville Phoenixville Boonville Waynesville Charlottesville
+## 1          IL           PA        CA          NC              VA
+## 2          IL           PA        CA          NC              VA
+##   Greenville Danville Woodinville Nashville Meadville Shelbyville
+## 1         SC       PA          WA        TN        PA          IN
+## 2         DE       PA          WA        TN        PA          IN
+##   Jacksonville Hudsonville Huntsville Biglerville Asheville Gainesville
+## 1           FL          MI         AL          PA        NC          FL
+## 2           FL          MI         AL          PA        NC          FL
+##   Knoxville Stevensville Mooresville Libertyville Garrattsville
+## 1        IA           MT          NC           IL            NY
+## 2        IA           MT          NC           IL            NY
+##                     sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## San Francisco                                                                        CA
+## South San Francisco                                                                  CA
+##   Holland Portland Pineland Ashland Loveland Cleveland Lockland Cortland
+## 1      MI       ME       ME      VA       CO        OH       OH       NE
+## 2      MI       OR       ME      OR       CO        OH       OH       NE
+##   Plainfield East.Fairfield Bloomfield Springfield Broomfield
+## 1         IN             VT         CT          MO         CO
+## 2         IN             VT         CT          OR         CO
+##   South.Deerfield Westfield Sheffield
+## 1              MA        MA        MA
+## 2              MA        MA        MA
+##                  sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Michigan City                                                                     IN
+## Kansas City                                                                       MO
+## Traverse City                                                                     MI
+## Salt Lake City                                                                    UT
+## Garden City                                                                       ID
+## Oklahoma City                                                                     OK
+## Lake Havasu City                                                                  AZ
+## Plant City                                                                        FL
+## Midwest City                                                                      OK
+##                  sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Dripping Springs                                                                  TX
+## Idaho Springs                                                                     CO
+## Diamond Springs                                                                   CA
+## Colorado Springs                                                                  CO
+## Abita Springs                                                                     LA
+##           sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Lemont                                                                     IL
+## Longmont                                                                   CO
+## Claremont                                                                  CA
+## Belmont                                                                    CA
+##   Bloomington Lexington Washington South.Burlington Wilmington Burlington
+## 1          IL        KY         DC               VT         DE         VT
+## 2          IN        VA         DC               VT         DE         VT
+##   Lake.Barrington Arrington Covington
+## 1              IL        VA        LA
+## 2              IL        VA        LA
+##              sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Austin                                                                        TX
+## South Austin                                                                  TX
+##   West.Chester Rochester Gloucester Westminster Worcester Leominster
+## 1           PA        MI         MA          MA        MA         MA
+## 2           PA        NY         MA          MA        MA         MA
+##   Lancaster
+## 1        PA
+## 2        PA
+##            sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Nellysford                                                                  VA
+## Stamford                                                                    CT
+## Stratford                                                                   CT
+## Medford                                                                     OR
+##            sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Waterbury                                                                   VT
+## Middlebury                                                                  VT
+##                    sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Virginia Beach                                                                      VA
+## Boynton Beach                                                                       FL
+## Jacksonville Beach                                                                  FL
+## Myrtle Beach                                                                        SC</code></pre>
+<pre class="r"><code># No corrections after last 3 match</code></pre>
+<pre class="r"><code>as.data.frame(table(BrDF$Name))[as.data.frame(table(BrDF$Name))$Freq &gt; 1, ]</code></pre>
+<pre><code>##                        Var1 Freq
+## 71       Blackrocks Brewery    2
+## 75    Blue Mountain Brewery    2
+## 298 Lucette Brewing Company    2
+## 368     Oskar Blues Brewery    2
+## 370     Otter Creek Brewing    2
+## 443 Sly Fox Brewing Company    2
+## 466  Summit Brewing Company    2</code></pre>
+<pre class="r"><code># Remove Dups if needed
+#BrDF &lt;- BrDF[!duplicated(BrDF[,c(&quot;Name&quot;,&quot;City&quot;,&quot;State&quot;)]), ]</code></pre>
+<pre class="r"><code>## Look for duplicates in Brewry Name
+## Match first 3
+uniTempVec &lt;- unique(BrDF$Name)
+tempListVec &lt;- character()
+for(i in 1:length(uniTempVec)){
+  subTobeSearched &lt;- substr(uniTempVec[i], 1,3)
+  subTobeSearched &lt;- paste0(&quot;^&quot;,subTobeSearched)
+  tempVec &lt;- unique(grep(subTobeSearched, uniTempVec,ignore.case = T, value = T))
+  if(length(tempVec) &gt; 1){
+    tempListVec &lt;- c(tempListVec, paste(&quot; &quot;, tempVec, collapse = &quot; &quot;))
+  }
+}
+
+unitempListVec &lt;- unique(tempListVec)
+temp3Vec &lt;- character()
+for(i in 1:length(unitempListVec)){
+  temp3Vec &lt;- character()
+  temp2Vec &lt;- trimws(as.vector(unlist(strsplit(trimws(unitempListVec[i], &quot;l&quot;), &quot;   &quot;))), &quot;l&quot;)
+  for (j in 1:length(temp2Vec)){
+    temp3Vec &lt;- c(temp3Vec,unique(paste(BrDF[BrDF$Name == temp2Vec[j], &quot;City&quot;], BrDF[BrDF$Name == temp2Vec[j], &quot;State&quot;], sep = &quot;+&quot;)))
+  }
+  if(length(unique(temp3Vec)) != length(temp3Vec)){
+    print(as.data.frame(sapply(temp2Vec, function(x) paste(BrDF[BrDF$Name == x, &quot;City&quot;], BrDF[BrDF$Name == x, &quot;State&quot;], sep = &quot;+&quot;))))
+  }
+}</code></pre>
+<pre><code>##                           sapply(temp2Vec, function(x) paste(BrDF[BrDF$Name == x, &quot;City&quot;], BrDF[BrDF$Name == x, &quot;State&quot;], sep = &quot;+&quot;))
+## Against the Grain Brewery                                                                                               Louisville+KY
+## Against The Grain Brewery                                                                                               Louisville+KY
+##                                   sapply(temp2Vec, function(x) paste(BrDF[BrDF$Name == x, &quot;City&quot;], BrDF[BrDF$Name == x, &quot;State&quot;], sep = &quot;+&quot;))
+## Great Divide Brewing Company                                                                                                        Denver+CO
+## Grey Sail Brewing Company                                                                                                         Westerly+RI
+## Greenbrier Valley Brewing Company                                                                                                Lewisburg+WV
+## Great Crescent Brewery                                                                                                              Aurora+IN
+## Great Raft Brewing Company                                                                                                      Shreveport+LA
+## Great River Brewery                                                                                                              Davenport+IA
+## Grey Sail Brewing of Rhode Island                                                                                                 Westerly+RI
+## Green Room Brewing                                                                                                            Jacksonville+FL
+## Great Northern Brewing Company                                                                                                   Whitefish+MT
+##                                 sapply(temp2Vec, function(x) paste(BrDF[BrDF$Name == x, &quot;City&quot;], BrDF[BrDF$Name == x, &quot;State&quot;], sep = &quot;+&quot;))
+## The Mitten Brewing Company                                                                                                  Grand Rapids+MI
+## The Dudes' Brewing Company                                                                                                      Torrance+CA
+## The Lion Brewery                                                                                                            Wilkes-Barre+PA
+## The Brewer's Art                                                                                                               Baltimore+MD
+## The Alchemist                                                                                                                  Waterbury+VT
+## The Just Beer Project                                                                                                         Burlington+VT
+## The Bronx Brewery                                                                                                                  Bronx+NY
+## The Traveler Beer Company                                                                                                     Burlington+VT
+## The Right Brain Brewery                                                                                                    Traverse City+MI
+## The Black Tooth Brewing Company                                                                                                 Sheridan+WY
+## The Manhattan Brewing Company                                                                                                   New York+NY
+##                               sapply(temp2Vec, function(x) paste(BrDF[BrDF$Name == x, &quot;City&quot;], BrDF[BrDF$Name == x, &quot;State&quot;], sep = &quot;+&quot;))
+## Hopworks Urban Brewery                                                                                                        Portland+OR
+## Hops &amp; Grains Brewing Company                                                                                                   Austin+TX
+## Hop Valley Brewing Company                                                                                                 Springfield+OR
+## Hop Farm Brewing Company                                                                                                    Pittsburgh+PA
+## Hops &amp; Grain Brewery                                                                                                            Austin+TX
+##                              sapply(temp2Vec, function(x) paste(BrDF[BrDF$Name == x, &quot;City&quot;], BrDF[BrDF$Name == x, &quot;State&quot;], sep = &quot;+&quot;))
+## Goose Island Brewing Company                                                                                                  Chicago+IL
+## Goodlife Brewing Co.                                                                                                             Bend+OR
+## Goose Island Brewery Company                                                                                                  Chicago+IL
+## Good Life Brewing Company                                                                                                        Bend+OR
+## Good People Brewing Company                                                                                                Birmingham+AL
+##                                sapply(temp2Vec, function(x) paste(BrDF[BrDF$Name == x, &quot;City&quot;], BrDF[BrDF$Name == x, &quot;State&quot;], sep = &quot;+&quot;))
+## Catawba Valley Brewing Company                                                                                                Morganton+NC
+## Catawba Island Brewing                                                                                                     Port Clinton+OH
+## Catawba Brewing Company                                                                                                       Morganton+NC
+##                              sapply(temp2Vec, function(x) paste(BrDF[BrDF$Name == x, &quot;City&quot;], BrDF[BrDF$Name == x, &quot;State&quot;], sep = &quot;+&quot;))
+## Angry Minnow                                                                                                                  Hayward+WI
+## Angry Orchard Cider Company                                                                                                Cincinnati+OH
+## Angry Minnow Brewing Company                                                                                                  Hayward+WI</code></pre>
+<pre class="r"><code># Do corrections here
+BrDF[BrDF$Name == &quot;Against the Grain Brewery&quot;, &quot;Name&quot;] &lt;- &quot;Against The Grain Brewery&quot;
+BrDF[BrDF$Name == &quot;Grey Sail Brewing of Rhode Island&quot;, &quot;Name&quot;] &lt;- &quot;Grey Sail Brewing Company&quot;
+BrDF[BrDF$Name == &quot;Hops &amp; Grains Brewing Company&quot;, &quot;Name&quot;] &lt;- &quot;Hops &amp; Grain Brewery&quot;
+BrDF[BrDF$Name == &quot;Goose Island Brewery Company&quot;, &quot;Name&quot;] &lt;- &quot;Goose Island Brewing Company&quot;
+BrDF[BrDF$Name == &quot;Goodlife Brewing Co.&quot;, &quot;Name&quot;] &lt;- &quot;Good Life Brewing Company&quot;
+BrDF[BrDF$Name == &quot;Catawba Brewing Company&quot;, &quot;Name&quot;] &lt;- &quot;Catawba Valley Brewing Company&quot;
+BrDF[BrDF$Name == &quot;Angry Minnow&quot;, &quot;Name&quot;] &lt;- &quot;Angry Minnow Brewing Company&quot;
+
+
+write.csv(BrDF, file = &quot;CleanedBreweryData.csv&quot;, row.names = F)</code></pre>
 </div>
 
 
