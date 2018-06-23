@@ -16,7 +16,7 @@ The purpose of this study is to help "Company Name" assess the market size and c
 ###Breweries per state
 The 558 breweries are spread among "# of States".  The most breweries are located in "state".  
 
-```{rQ1, echo = TRUE}
+```{r Q1, echo=TRUE}
 #Q2 - Merge Beer and Breweries files by Brew_ID (Assumes Beers.csv file has renamed Brewery_ID to Brew_ID) and prints the first/last 6 observations.
 beers <- read.csv("CleanedBeerData.csv", header = TRUE)
 breweries <- read.csv("CleanedBreweryData.csv", header = TRUE)
@@ -30,7 +30,7 @@ state.count
 ###First 6, Last 6
 Some of the observations are seen below.  The data gathered includes 
 
-```{rQ2, echo = TRUE}
+```{r Q2, echo = TRUE}
 head(master.file,6)
 tail(master.file,6)
 ```
@@ -38,31 +38,31 @@ tail(master.file,6)
 ###Number of NA's
 Some of the data was incomplete.  A summary of incomplete information is shown below.
 
-```{rQ3, echo = TRUE}
+```{r Q3, echo = TRUE}
 colSums(is.na(master.file))
 ```
 
 ###Median Alcohol Content & International Bitterness Unti (IBU) for each state
 The median amount of alcohol content and IBUs in each state is listed below. "Add Info about scatterplot"
-```{rQ4, echo = TRUE}
+```{r Q4, echo = TRUE}
 
 ```
 
 ###Maximum Alcoholic (ABV) and Most Bitter(IBU) Beer
 Based on the information gathered "Name of state" has the highest alcohol by volumne (ABV) and "Name of state" has the highest rating of International Bitterness Units (IBU) compared to the other states.
-```{rQ5, echo = TRUE}
+```{r Q5, echo = TRUE}
 
 ```
 
 ###ABV Summary
 "Insert data about Min, Max, quartiles, etc."
-```{rQ6, echo = TRUE}
+```{r Q6, echo = TRUE}
 
 ```
 
 ###IBU and ABV relationship
 "Insert data and description of relationshipbetween IBU and ABV"
-```{rQ7, echo = TRUE}
+```{r Q7, echo = TRUE}
 
 ```
 
