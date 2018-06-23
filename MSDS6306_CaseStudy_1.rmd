@@ -7,19 +7,25 @@ output:
     keep_md: yes
 ---
 
+####Tidying Beers Data
 
 ```{r}
 #read in Beers data set with correct character formatting.
 Beers <- read.csv("Beers.csv", header=TRUE, fileEncoding = 'UTF-8')
+```
 
+```{r}
+#Remove duplicate beers if ALL columns but the Beer ID are the same. 
 UniqueBeers <- Beers[!duplicated(Beers[c(1,3,4,5,6,7)]),]
+```
 
-
+```{r}
+#Group beers by Brewery and Size
 if(FALSE){
-  byBrewery <- split(UniqueBeers, list(UniqueBeers$Ounces, UniqueBeers$Brewery_id)) #Group beers by Brewery and size
-  
-  # Match First 3 Chars
-  for(i in 1:length(byBrewery)){
+  byBrewery <- split(UniqueBeers, list(UniqueBeers$Ounces, UniqueBeers$Brewery_id))
+
+# Match First 3 Chars
+for(i in 1:length(byBrewery)){
     uniTempVec <- unique(byBrewery[[i]]$Name)
     tempListVec <- character()
     for(i in 1:length(uniTempVec)){
@@ -46,8 +52,7 @@ if(FALSE){
     }
   }
 
-
-  # Match Last 3 chars
+# Match Last 3 chars
   for(i in 1:length(byBrewery)){
     uniTempVec <- as.character(unique(byBrewery[[i]]$Name))
     tempListVec <- character()
@@ -75,7 +80,9 @@ if(FALSE){
     }
   }
 }
+```
 
+```{r}
 #Removed beers with identical ABU, IBU, Brewery_id, Ounces but slight differences in name
 UniqueBeers <- subset(UniqueBeers, Name != "Ranger IPA (Current)")
 UniqueBeers <- subset(UniqueBeers, Name != "Shift (1)")
@@ -110,5 +117,124 @@ unique(breweries[grep("^[Ss].*", breweries$City), "City"])
 ```
 
 ```{r}
-#With State and City cleaned up, we check for duplicates breweries by matching the name, each's city, than state.  Still in process.
+#With State and City cleaned up, we check for duplicates breweries by matching the name, each's city, than state. 
+BrDF <- read.csv("Breweries.csv", header = T, stringsAsFactors = F)
+
+grep("[[:punct:]]",BrDF$City, value = T)
+grep("[[:punct:][:blank:]]+",BrDF$City, value = T)
+grep("^..[[:punct:][:blank:]]+",BrDF$City, value = T)
+BrDF$City <- gsub("^St[[:punct:][:blank:]]+","Saint ",BrDF$City)
+BrDF$City <- gsub("^Mt[[:punct:][:blank:]]+","Mount ",BrDF$City)
+
+uniTempVec <- unique(BrDF$City)
+tempListVec <- character()
+for(i in 1:length(uniTempVec)){
+  subTobeSearched <- substr(uniTempVec[i], 1,3)
+  subTobeSearched <- paste0("^",subTobeSearched)
+  tempVec <- unique(grep(subTobeSearched, uniTempVec, ignore.case = T, value = T))
+  if(length(tempVec) > 1){
+    tempListVec <- c(tempListVec, paste(" ", tempVec, collapse = " "))
+  }
+}
+
+unitempListVec <- unique(tempListVec)
+temp3Vec <- character()
+for(i in 1:length(unitempListVec)){
+  temp3Vec <- character()
+  temp2Vec <- as.vector(unlist(strsplit(trimws(unitempListVec[i], "l"), "   ")))
+  for (j in 1:length(temp2Vec)){
+    temp3Vec <- c(temp3Vec,unique(as.character(BrDF[BrDF$City == temp2Vec[j], "State"])))
+  }
+  if(length(unique(temp3Vec)) != length(temp3Vec)){
+    print(as.data.frame(sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, "State"]))))
+  }
+}
+```
+
+```{r}
+## Do corrections to City Names or State Names
+# COrrections 
+BrDF[BrDF$City == "Menominee", 'City'] <- "Menomonie"
+BrDF[BrDF$City == "Menominie", 'City'] <- "Menomonie"
+# Remove leading white space from State col
+BrDF$State <- trimws(BrDF$State, "l")
+# City Marquette is in MI and not MA
+BrDF[BrDF$City == "Marquette" & BrDF$State == "MA", 'State'] <- "MI"
+```
+
+```{r}
+# Match Last 3 Chars
+uniTempVec <- unique(BrDF$City)
+tempListVec <- character()
+for(i in 1:length(uniTempVec)){
+  subTobeSearched <- substr(uniTempVec[i], nchar(uniTempVec[i]) - 3, nchar(uniTempVec[i]))
+  subTobeSearched <- paste0(subTobeSearched,"$")
+  tempVec <- unique(grep(subTobeSearched, uniTempVec,ignore.case = T, value = T))
+  if(length(tempVec) > 1){
+    tempListVec <- c(tempListVec, paste(" ", tempVec, collapse = " "))
+  }
+}
+
+unitempListVec <- unique(tempListVec)
+temp3Vec <- character()
+for(i in 1:length(unitempListVec)){
+  temp3Vec <- character()
+  temp2Vec <- as.vector(unlist(strsplit(trimws(unitempListVec[i], "l"), "   ")))
+  for (j in 1:length(temp2Vec)){
+    temp3Vec <- c(temp3Vec,unique(as.character(BrDF[BrDF$City == temp2Vec[j], "State"])))
+  }
+  if(length(unique(temp3Vec)) != length(temp3Vec)){
+    print(as.data.frame(sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, "State"]))))
+  }
+}
+
+# No corrections after last 3 match
+```
+
+```{r}
+as.data.frame(table(BrDF$Name))[as.data.frame(table(BrDF$Name))$Freq > 1, ]
+# Remove Dups if needed
+#BrDF <- BrDF[!duplicated(BrDF[,c("Name","City","State")]), ]
+```
+
+```{r}
+## Look for duplicates in Brewry Name
+## Match first 3
+uniTempVec <- unique(BrDF$Name)
+tempListVec <- character()
+for(i in 1:length(uniTempVec)){
+  subTobeSearched <- substr(uniTempVec[i], 1,3)
+  subTobeSearched <- paste0("^",subTobeSearched)
+  tempVec <- unique(grep(subTobeSearched, uniTempVec,ignore.case = T, value = T))
+  if(length(tempVec) > 1){
+    tempListVec <- c(tempListVec, paste(" ", tempVec, collapse = " "))
+  }
+}
+
+unitempListVec <- unique(tempListVec)
+temp3Vec <- character()
+for(i in 1:length(unitempListVec)){
+  temp3Vec <- character()
+  temp2Vec <- trimws(as.vector(unlist(strsplit(trimws(unitempListVec[i], "l"), "   "))), "l")
+  for (j in 1:length(temp2Vec)){
+    temp3Vec <- c(temp3Vec,unique(paste(BrDF[BrDF$Name == temp2Vec[j], "City"], BrDF[BrDF$Name == temp2Vec[j], "State"], sep = "+")))
+  }
+  if(length(unique(temp3Vec)) != length(temp3Vec)){
+    print(as.data.frame(sapply(temp2Vec, function(x) paste(BrDF[BrDF$Name == x, "City"], BrDF[BrDF$Name == x, "State"], sep = "+"))))
+  }
+}
+```
+
+```{r}
+# Do corrections here
+BrDF[BrDF$Name == "Against the Grain Brewery", "Name"] <- "Against The Grain Brewery"
+BrDF[BrDF$Name == "Grey Sail Brewing of Rhode Island", "Name"] <- "Grey Sail Brewing Company"
+BrDF[BrDF$Name == "Hops & Grains Brewing Company", "Name"] <- "Hops & Grain Brewery"
+BrDF[BrDF$Name == "Goose Island Brewery Company", "Name"] <- "Goose Island Brewing Company"
+BrDF[BrDF$Name == "Goodlife Brewing Co.", "Name"] <- "Good Life Brewing Company"
+BrDF[BrDF$Name == "Catawba Brewing Company", "Name"] <- "Catawba Valley Brewing Company"
+BrDF[BrDF$Name == "Angry Minnow", "Name"] <- "Angry Minnow Brewing Company"
+
+
+write.csv(BrDF, file = "CleanedBreweryData.csv", row.names = F)
 ```
