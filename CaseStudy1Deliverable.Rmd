@@ -25,6 +25,11 @@ write.csv(master.file, file = "masterfile.csv", row.names = FALSE)
 state.count <- as.data.frame(table(master.file$State))
 names(state.count) <- c("State", "Brewery_Count")
 state.count
+library(ggplot2)
+states <- data.frame(master.file$Brew_ID, master.file$State)
+StatePlot <- ggplot(states, aes(x=master.file.State, color=master.file.State)) + geom_bar(stat="Count", width = 0.75) + labs(x = "State") + theme(legend.position = "none") + coord_flip()
+StatePlot
+
 ```
 
 ###First 6, Last 6
