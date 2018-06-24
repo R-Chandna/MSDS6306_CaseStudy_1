@@ -11,17 +11,275 @@ output:
 
 The purpose of this study is to help "Company Name" assess the market size and competition on where the next "Company Name" brewery should be built and what type of beer it should brew. The data used in this study was derived from "Author of Data" and includes 2410 US craft beers from 558 US breweries. (see Codebook for specific details)
 
+#Tidy Data Process
+Data for this project came from two different sources (Beers and Brewery).  Both data sets had extensive errors and duplications that were correct or eliminated prior to beginning the research.
+
+#####Beers File
+```{r beer, eco=TRUE}
+#Tidying of Beers:
+#read in Beers data set with correct character formatting.
+Beers <- read.csv("Beers.csv", header=TRUE, fileEncoding = 'UTF-8')
+```
+
+```{r}
+#Remove duplicate beers if ALL columns but the Beer ID are the same. 
+UniqueBeers <- Beers[!duplicated(Beers[c(1,3,4,5,6,7)]),]
+```
+
+```{r}
+#Group beers by Brewery and Size
+if(FALSE){
+  byBrewery <- split(UniqueBeers, list(UniqueBeers$Ounces, UniqueBeers$Brewery_id))
+
+# Match First 3 Chars
+for(i in 1:length(byBrewery)){
+    uniTempVec <- unique(byBrewery[[i]]$Name)
+    tempListVec <- character()
+    for(i in 1:length(uniTempVec)){
+      subTobeSearched <- substr(uniTempVec[i], 1,3)
+      subTobeSearched <- paste0("^",subTobeSearched)
+      tempVec <- unique(grep(subTobeSearched, uniTempVec, ignore.case = T, value = T))
+      if(length(tempVec) > 1){
+        tempListVec <- c(tempListVec, paste(" ", tempVec, collapse = " "))
+      }
+    }
+
+    unitempListVec <- unique(tempListVec)
+    for(i in 1:length(unitempListVec)){
+      temp2Vec <- as.vector(unlist(strsplit(trimws(unitempListVec[i], "l"), "   ")))
+      if(length(temp2Vec) > 1){
+        for(i in 1:length(temp2Vec)){
+          cat(temp2Vec[i], file = "./First3matches.csv", append = T)
+          if(i != length(temp2Vec)){
+            cat(", ", file = "./First3matches.csv", append = T)
+          }  
+        }
+        cat("\n", file = "./First3matches.csv", append = T)
+      }
+    }
+  }
+
+# Match Last 3 chars
+  for(i in 1:length(byBrewery)){
+    uniTempVec <- as.character(unique(byBrewery[[i]]$Name))
+    tempListVec <- character()
+    for(i in 1:length(uniTempVec)){
+      subTobeSearched <- substr(uniTempVec[i], nchar(uniTempVec[i]) - 3, nchar(uniTempVec[i]))
+      subTobeSearched <- paste0(subTobeSearched, "$")
+      tempVec <- unique(grep(subTobeSearched, uniTempVec, ignore.case = T, value = T))
+      if(length(tempVec) > 1){
+        tempListVec <- c(tempListVec, paste(" ", tempVec, collapse = " "))
+      }
+    }
+
+    unitempListVec <- unique(tempListVec)
+    for(i in 1:length(unitempListVec)){
+      temp2Vec <- as.vector(unlist(strsplit(trimws(unitempListVec[i], "l"), "   ")))
+      if(length(temp2Vec) > 1){
+        for(i in 1:length(temp2Vec)){
+          cat(temp2Vec[i], file = "./Last3matches.csv", append = T)
+          if(i != length(temp2Vec)){
+            cat(", ", file = "./Last3matches.csv", append = T)
+          }  
+        }
+        cat("\n", file = "./Last3matches.csv", append = T)
+      }
+    }
+  }
+}
+```
+
+```{r}
+#Removed beers with identical ABU, IBU, Brewery_id, Ounces but slight differences in name
+UniqueBeers <- subset(UniqueBeers, Name != "Ranger IPA (Current)")
+UniqueBeers <- subset(UniqueBeers, Name != "Shift (1)")
+UniqueBeers <- subset(UniqueBeers, Name != "Point Special (Current)")
+UniqueBeers <- subset(UniqueBeers, Name != "Cherry Ale (1)")
+UniqueBeers <- subset(UniqueBeers, Name != "Pleasure Town")
+UniqueBeers <- subset(UniqueBeers, Name != "Farmer Ted's Cream Ale")
+UniqueBeers <- subset(UniqueBeers, Name != "Dry Cider")
+UniqueBeers <- subset(UniqueBeers, Name != "Abbey's Single (2015- )")
+UniqueBeers <- subset(UniqueBeers, Name != "Triomphe")
+UniqueBeers <- subset(UniqueBeers, Name != "Bender")
+UniqueBeers <- subset(UniqueBeers, Name != "Hipster Ale (Westbrook Brewing)")
+#rename Hipster Ale (Two Roads Brewing) to Hipster Ale, Two Roads Brewing does not brew Hipster Ale
+levels(UniqueBeers$Name)[levels(UniqueBeers$Name) == "Hipster Ale (Two Roads Brewing)"] = "Hipster Ale"
+```
+```{r}
+#Add code to change Brewery_ID column to match the Brews file and create CSV output of clean data.
+colnames(UniqueBeers)[colnames(UniqueBeers)=="Brewery_id"] <- "Brew_ID"
+
+#Write Clean File
+write.csv(UniqueBeers, file="CleanedBeerData.csv", row.names = F)
+
+```
+#####Brewery
+```{r}
+#Tidying Breweries.csv Section. Completed by Rajat and Andy
+#First inspect the State column.  We listed out the States and got the count for each.  If observation > 50, we investigated further by examining all the States with a count of 1 (DC, ND, SD, WV).  In this case, there was 51 States and confirmed the 51st was DC which is acceptable.  All abbreviations in State column is valid.
+breweries <- read.csv("Breweries.csv", header = TRUE)
+str(breweries)
+summary(breweries)
+table(breweries$State)
+```
+
+```{r}
+#In this section, looking to clean up the "City" column.  Still looking for a more elequent code but for now creating subsets for each letter and visually identifying misspellings, abbreviations, and/or punctuations.  Rajat to research a function that creates a subset of cities by subsetting cities with the same 3 letter string.
+unique(breweries[grep("[.]", breweries$City), "City"])
+unique(breweries[grep("^[Mm].*", breweries$City), "City"])
+unique(breweries[grep("^[Ss].*", breweries$City), "City"])
+```
+
+```{r}
+#With State and City cleaned up, we check for duplicates breweries by matching the name, each's city, than state. 
+BrDF <- read.csv("Breweries.csv", header = T, stringsAsFactors = F)
+
+grep("[[:punct:]]",BrDF$City, value = T)
+grep("[[:punct:][:blank:]]+",BrDF$City, value = T)
+grep("^..[[:punct:][:blank:]]+",BrDF$City, value = T)
+BrDF$City <- gsub("^St[[:punct:][:blank:]]+","Saint ",BrDF$City)
+BrDF$City <- gsub("^Mt[[:punct:][:blank:]]+","Mount ",BrDF$City)
+
+uniTempVec <- unique(BrDF$City)
+tempListVec <- character()
+for(i in 1:length(uniTempVec)){
+  subTobeSearched <- substr(uniTempVec[i], 1,3)
+  subTobeSearched <- paste0("^",subTobeSearched)
+  tempVec <- unique(grep(subTobeSearched, uniTempVec, ignore.case = T, value = T))
+  if(length(tempVec) > 1){
+    tempListVec <- c(tempListVec, paste(" ", tempVec, collapse = " "))
+  }
+}
+
+unitempListVec <- unique(tempListVec)
+temp3Vec <- character()
+for(i in 1:length(unitempListVec)){
+  temp3Vec <- character()
+  temp2Vec <- as.vector(unlist(strsplit(trimws(unitempListVec[i], "l"), "   ")))
+  for (j in 1:length(temp2Vec)){
+    temp3Vec <- c(temp3Vec,unique(as.character(BrDF[BrDF$City == temp2Vec[j], "State"])))
+  }
+  if(length(unique(temp3Vec)) != length(temp3Vec)){
+    print(as.data.frame(sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, "State"]))))
+  }
+}
+```
+
+```{r}
+## Do corrections to City Names or State Names
+# COrrections 
+BrDF[BrDF$City == "Menominee", 'City'] <- "Menomonie"
+BrDF[BrDF$City == "Menominie", 'City'] <- "Menomonie"
+# Remove leading white space from State col
+BrDF$State <- trimws(BrDF$State, "l")
+# City Marquette is in MI and not MA
+BrDF[BrDF$City == "Marquette" & BrDF$State == "MA", 'State'] <- "MI"
+```
+
+```{r}
+# Match Last 3 Chars
+uniTempVec <- unique(BrDF$City)
+tempListVec <- character()
+for(i in 1:length(uniTempVec)){
+  subTobeSearched <- substr(uniTempVec[i], nchar(uniTempVec[i]) - 3, nchar(uniTempVec[i]))
+  subTobeSearched <- paste0(subTobeSearched,"$")
+  tempVec <- unique(grep(subTobeSearched, uniTempVec,ignore.case = T, value = T))
+  if(length(tempVec) > 1){
+    tempListVec <- c(tempListVec, paste(" ", tempVec, collapse = " "))
+  }
+}
+
+unitempListVec <- unique(tempListVec)
+temp3Vec <- character()
+for(i in 1:length(unitempListVec)){
+  temp3Vec <- character()
+  temp2Vec <- as.vector(unlist(strsplit(trimws(unitempListVec[i], "l"), "   ")))
+  for (j in 1:length(temp2Vec)){
+    temp3Vec <- c(temp3Vec,unique(as.character(BrDF[BrDF$City == temp2Vec[j], "State"])))
+  }
+  if(length(unique(temp3Vec)) != length(temp3Vec)){
+    print(as.data.frame(sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, "State"]))))
+  }
+}
+
+# No corrections after last 3 match
+```
+
+```{r}
+as.data.frame(table(BrDF$Name))[as.data.frame(table(BrDF$Name))$Freq > 1, ]
+# Remove Dups if needed
+#BrDF <- BrDF[!duplicated(BrDF[,c("Name","City","State")]), ]
+```
+
+```{r}
+## Look for duplicates in Brewry Name
+## Match first 3
+uniTempVec <- unique(BrDF$Name)
+tempListVec <- character()
+for(i in 1:length(uniTempVec)){
+  subTobeSearched <- substr(uniTempVec[i], 1,3)
+  subTobeSearched <- paste0("^",subTobeSearched)
+  tempVec <- unique(grep(subTobeSearched, uniTempVec,ignore.case = T, value = T))
+  if(length(tempVec) > 1){
+    tempListVec <- c(tempListVec, paste(" ", tempVec, collapse = " "))
+  }
+}
+
+unitempListVec <- unique(tempListVec)
+temp3Vec <- character()
+for(i in 1:length(unitempListVec)){
+  temp3Vec <- character()
+  temp2Vec <- trimws(as.vector(unlist(strsplit(trimws(unitempListVec[i], "l"), "   "))), "l")
+  for (j in 1:length(temp2Vec)){
+    temp3Vec <- c(temp3Vec,unique(paste(BrDF[BrDF$Name == temp2Vec[j], "City"], BrDF[BrDF$Name == temp2Vec[j], "State"], sep = "+")))
+  }
+  if(length(unique(temp3Vec)) != length(temp3Vec)){
+    print(as.data.frame(sapply(temp2Vec, function(x) paste(BrDF[BrDF$Name == x, "City"], BrDF[BrDF$Name == x, "State"], sep = "+"))))
+  }
+}
+```
+
+```{r}
+# Do corrections here
+BrDF[BrDF$Name == "Against the Grain Brewery", "Name"] <- "Against The Grain Brewery"
+BrDF[BrDF$Name == "Grey Sail Brewing of Rhode Island", "Name"] <- "Grey Sail Brewing Company"
+BrDF[BrDF$Name == "Hops & Grains Brewing Company", "Name"] <- "Hops & Grain Brewery"
+BrDF[BrDF$Name == "Goose Island Brewery Company", "Name"] <- "Goose Island Brewing Company"
+BrDF[BrDF$Name == "Goodlife Brewing Co.", "Name"] <- "Good Life Brewing Company"
+BrDF[BrDF$Name == "Catawba Brewing Company", "Name"] <- "Catawba Valley Brewing Company"
+BrDF[BrDF$Name == "Angry Minnow", "Name"] <- "Angry Minnow Brewing Company"
+
+#Write Clean File
+write.csv(BrDF, file = "CleanedBreweryData.csv", row.names = F)
+```
+
 #Guiding Questions
 
-###Breweries per state
-The 558 breweries are spread among "# of States".  The most breweries are located in "state".  
+###First 6, Last 6
+The files were merged and some of the observations are seen below.  The data gathered includes... 
 
-```{r Q1, echo=TRUE}
-#Q2 - Merge Beer and Breweries files by Brew_ID and count of Breweries by State
+```{r Q2, echo=TRUE}
+#Q2 - Merge Beer and Breweries files by Brew_ID (Assumes Beers.csv file has renamed Brewery_ID to Brew_ID) and prints the first/last 6 observations.
 beers <- read.csv("CleanedBeerData.csv", header = TRUE)
 breweries <- read.csv("CleanedBreweryData.csv", header = TRUE)
 master.file <- Reduce(function(beers, breweries) merge(beers, breweries, by="Brew_ID"), list(beers, breweries))
+names(master.file) <- c("Brewery_id", "Beer_name", "Beer_id", "ABV", "IBU", "Style", "Ounces", "Brewery_name", "City", "State")
 write.csv(master.file, file = "masterfile.csv", row.names = FALSE)
+head(master.file,6)
+tail(master.file,6)
+```
+
+###Number of NA's
+Once the data was cleaned and combined, there were still data that showed incomplete.  These include 997 IBU ratings and 62 ABV marks, as seen below.
+
+```{r Q3, echo = TRUE}
+#Q3 - Summing the NA's for each column
+colSums(is.na(master.file))
+```
+
+###Breweries per state
+The 558 breweries are spread among all 50 states and includes District of Columbia for a total of 51.  The most breweries are located in in Colorado (259).  Other states with at least 100 breweries include: Pennsylvania (100), Oregon (114), Texas (130), Indiana (138), Michigan (162), and California (181).  
+```{r Q1, echo=TRUE}
 state.count <- as.data.frame(table(master.file$State))
 names(state.count) <- c("State", "Brewery_Count")
 statesSort <- state.count[order(state.count$Brewery_Count),]
@@ -32,30 +290,9 @@ StateCount <- ggplot(statesSort, aes(reorder(State, -Brewery_Count), Brewery_Cou
 StateCount
 ```
 
-###First 6, Last 6
-Some of the observations are seen below.  The data gathered includes 
 
-```{rQ2, echo = TRUE}
-#Q2 - Merge Beer and Breweries files by Brew_ID and prints the first/last 6 observations.
-beers <- read.csv("Beers.csv", header = TRUE)
-names(breweries) <- c("Brewery_id", "Name", "City", "State")
-master.file <- Reduce(function(beers, breweries) merge(beers, breweries, by="Brewery_id"), list(beers, breweries))
-names(master.file) <- c("Brewery_id", "Beer_name", "Beer_id", "ABV", "IBU", "Style", "Ounces", "Brewery_name", "City", "State")
-head(master.file,6)
-tail(master.file,6)
-write.csv(master.file, file = "masterfile.csv", row.names = FALSE)
-```
-
-###Number of NA's
-Some of the data was incomplete.  A summary of incomplete information is shown below.
-
-```{r Q3, echo = TRUE}
-#Q3 - Summing the NA's for each column
-colSums(is.na(master.file))
-```
-
-###Median Alcohol Content & International Bitterness Unti (IBU) for each state
-The median amount of alcohol content and IBUs in each state is listed below. "Add Info about scatterplot"
+###Median Alcohol Content & International Bitterness Units (IBU) for each state
+The median amount of alcohol content and IBUs in each state is listed below. "Add Info about data"
 ```{rQ4, echo = TRUE}
 medianIBUABV<-aggregate.data.frame(master.file[, 4:5], list(master.file$State), median, na.rm=TRUE)
 states<-rep(medianIBUABV$Group.1,2)
