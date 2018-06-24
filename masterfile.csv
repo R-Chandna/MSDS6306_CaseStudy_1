@@ -1,4 +1,4 @@
-"Brew_ID","Name.x","Beer_ID","ABV","IBU","Style","Ounces","Name.y","City","State"
+"Brewery_id","Beer_name","Beer_id","ABV","IBU","Style","Ounces","Brewery_name","City","State"
 1,"Get Together",2692,0.045,50,"American IPA",16,"NorthGate Brewing ","Minneapolis","MN"
 1,"Maggie's Leap",2691,0.049,26,"Milk / Sweet Stout",16,"NorthGate Brewing ","Minneapolis","MN"
 1,"Wall's End",2690,0.048,19,"English Brown Ale",16,"NorthGate Brewing ","Minneapolis","MN"

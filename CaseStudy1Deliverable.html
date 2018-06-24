@@ -130,17 +130,572 @@ $(document).ready(function () {
 <h1>Introduction</h1>
 <p>The purpose of this study is to help “Company Name” assess the market size and competition on where the next “Company Name” brewery should be built and what type of beer it should brew. The data used in this study was derived from “Author of Data” and includes 2410 US craft beers from 558 US breweries. (see Codebook for specific details)</p>
 </div>
+<div id="tidy-data-process" class="section level1">
+<h1>Tidy Data Process</h1>
+<p>Data for this project came from two different sources (Beers and Brewery). Both data sets had extensive errors and duplications that were correct or eliminated prior to beginning the research.</p>
+<div id="beers-file" class="section level5">
+<h5>Beers File</h5>
+<pre class="r"><code>#Tidying of Beers:
+#read in Beers data set with correct character formatting.
+Beers &lt;- read.csv(&quot;Beers.csv&quot;, header=TRUE, fileEncoding = 'UTF-8')</code></pre>
+<pre class="r"><code>#Remove duplicate beers if ALL columns but the Beer ID are the same. 
+UniqueBeers &lt;- Beers[!duplicated(Beers[c(1,3,4,5,6,7)]),]</code></pre>
+<pre class="r"><code>#Group beers by Brewery and Size
+if(FALSE){
+  byBrewery &lt;- split(UniqueBeers, list(UniqueBeers$Ounces, UniqueBeers$Brewery_id))
+
+# Match First 3 Chars
+for(i in 1:length(byBrewery)){
+    uniTempVec &lt;- unique(byBrewery[[i]]$Name)
+    tempListVec &lt;- character()
+    for(i in 1:length(uniTempVec)){
+      subTobeSearched &lt;- substr(uniTempVec[i], 1,3)
+      subTobeSearched &lt;- paste0(&quot;^&quot;,subTobeSearched)
+      tempVec &lt;- unique(grep(subTobeSearched, uniTempVec, ignore.case = T, value = T))
+      if(length(tempVec) &gt; 1){
+        tempListVec &lt;- c(tempListVec, paste(&quot; &quot;, tempVec, collapse = &quot; &quot;))
+      }
+    }
+
+    unitempListVec &lt;- unique(tempListVec)
+    for(i in 1:length(unitempListVec)){
+      temp2Vec &lt;- as.vector(unlist(strsplit(trimws(unitempListVec[i], &quot;l&quot;), &quot;   &quot;)))
+      if(length(temp2Vec) &gt; 1){
+        for(i in 1:length(temp2Vec)){
+          cat(temp2Vec[i], file = &quot;./First3matches.csv&quot;, append = T)
+          if(i != length(temp2Vec)){
+            cat(&quot;, &quot;, file = &quot;./First3matches.csv&quot;, append = T)
+          }  
+        }
+        cat(&quot;\n&quot;, file = &quot;./First3matches.csv&quot;, append = T)
+      }
+    }
+  }
+
+# Match Last 3 chars
+  for(i in 1:length(byBrewery)){
+    uniTempVec &lt;- as.character(unique(byBrewery[[i]]$Name))
+    tempListVec &lt;- character()
+    for(i in 1:length(uniTempVec)){
+      subTobeSearched &lt;- substr(uniTempVec[i], nchar(uniTempVec[i]) - 3, nchar(uniTempVec[i]))
+      subTobeSearched &lt;- paste0(subTobeSearched, &quot;$&quot;)
+      tempVec &lt;- unique(grep(subTobeSearched, uniTempVec, ignore.case = T, value = T))
+      if(length(tempVec) &gt; 1){
+        tempListVec &lt;- c(tempListVec, paste(&quot; &quot;, tempVec, collapse = &quot; &quot;))
+      }
+    }
+
+    unitempListVec &lt;- unique(tempListVec)
+    for(i in 1:length(unitempListVec)){
+      temp2Vec &lt;- as.vector(unlist(strsplit(trimws(unitempListVec[i], &quot;l&quot;), &quot;   &quot;)))
+      if(length(temp2Vec) &gt; 1){
+        for(i in 1:length(temp2Vec)){
+          cat(temp2Vec[i], file = &quot;./Last3matches.csv&quot;, append = T)
+          if(i != length(temp2Vec)){
+            cat(&quot;, &quot;, file = &quot;./Last3matches.csv&quot;, append = T)
+          }  
+        }
+        cat(&quot;\n&quot;, file = &quot;./Last3matches.csv&quot;, append = T)
+      }
+    }
+  }
+}</code></pre>
+<pre class="r"><code>#Removed beers with identical ABU, IBU, Brewery_id, Ounces but slight differences in name
+UniqueBeers &lt;- subset(UniqueBeers, Name != &quot;Ranger IPA (Current)&quot;)
+UniqueBeers &lt;- subset(UniqueBeers, Name != &quot;Shift (1)&quot;)
+UniqueBeers &lt;- subset(UniqueBeers, Name != &quot;Point Special (Current)&quot;)
+UniqueBeers &lt;- subset(UniqueBeers, Name != &quot;Cherry Ale (1)&quot;)
+UniqueBeers &lt;- subset(UniqueBeers, Name != &quot;Pleasure Town&quot;)
+UniqueBeers &lt;- subset(UniqueBeers, Name != &quot;Farmer Ted's Cream Ale&quot;)
+UniqueBeers &lt;- subset(UniqueBeers, Name != &quot;Dry Cider&quot;)
+UniqueBeers &lt;- subset(UniqueBeers, Name != &quot;Abbey's Single (2015- )&quot;)
+UniqueBeers &lt;- subset(UniqueBeers, Name != &quot;Triomphe&quot;)
+UniqueBeers &lt;- subset(UniqueBeers, Name != &quot;Bender&quot;)
+UniqueBeers &lt;- subset(UniqueBeers, Name != &quot;Hipster Ale (Westbrook Brewing)&quot;)
+#rename Hipster Ale (Two Roads Brewing) to Hipster Ale, Two Roads Brewing does not brew Hipster Ale
+levels(UniqueBeers$Name)[levels(UniqueBeers$Name) == &quot;Hipster Ale (Two Roads Brewing)&quot;] = &quot;Hipster Ale&quot;</code></pre>
+<pre class="r"><code>#Add code to change Brewery_ID column to match the Brews file and create CSV output of clean data.
+colnames(UniqueBeers)[colnames(UniqueBeers)==&quot;Brewery_id&quot;] &lt;- &quot;Brew_ID&quot;
+
+#Write Clean File
+write.csv(UniqueBeers, file=&quot;CleanedBeerData.csv&quot;, row.names = F)</code></pre>
+</div>
+<div id="brewery" class="section level5">
+<h5>Brewery</h5>
+<pre class="r"><code>#Tidying Breweries.csv Section. Completed by Rajat and Andy
+#First inspect the State column.  We listed out the States and got the count for each.  If observation &gt; 50, we investigated further by examining all the States with a count of 1 (DC, ND, SD, WV).  In this case, there was 51 States and confirmed the 51st was DC which is acceptable.  All abbreviations in State column is valid.
+breweries &lt;- read.csv(&quot;Breweries.csv&quot;, header = TRUE)
+str(breweries)</code></pre>
+<pre><code>## 'data.frame':    558 obs. of  4 variables:
+##  $ Brew_ID: int  1 2 3 4 5 6 7 8 9 10 ...
+##  $ Name   : Factor w/ 551 levels &quot;10 Barrel Brewing Company&quot;,..: 355 12 266 319 201 136 227 477 59 491 ...
+##  $ City   : Factor w/ 384 levels &quot;Abingdon&quot;,&quot;Abita Springs&quot;,..: 228 200 122 299 300 62 91 48 152 136 ...
+##  $ State  : Factor w/ 51 levels &quot; AK&quot;,&quot; AL&quot;,&quot; AR&quot;,..: 24 18 20 5 5 41 6 23 23 23 ...</code></pre>
+<pre class="r"><code>summary(breweries)</code></pre>
+<pre><code>##     Brew_ID                           Name           City    
+##  Min.   :  1.0   Blackrocks Brewery     :  2   Portland: 17  
+##  1st Qu.:140.2   Blue Mountain Brewery  :  2   Boulder :  9  
+##  Median :279.5   Lucette Brewing Company:  2   Chicago :  9  
+##  Mean   :279.5   Oskar Blues Brewery    :  2   Seattle :  9  
+##  3rd Qu.:418.8   Otter Creek Brewing    :  2   Austin  :  8  
+##  Max.   :558.0   Sly Fox Brewing Company:  2   Denver  :  8  
+##                  (Other)                :546   (Other) :498  
+##      State    
+##   CO    : 47  
+##   CA    : 39  
+##   MI    : 32  
+##   OR    : 29  
+##   TX    : 28  
+##   PA    : 25  
+##  (Other):358</code></pre>
+<pre class="r"><code>table(breweries$State)</code></pre>
+<pre><code>## 
+##  AK  AL  AR  AZ  CA  CO  CT  DC  DE  FL  GA  HI  IA  ID  IL  IN  KS  KY 
+##   7   3   2  11  39  47   8   1   2  15   7   4   5   5  18  22   3   4 
+##  LA  MA  MD  ME  MI  MN  MO  MS  MT  NC  ND  NE  NH  NJ  NM  NV  NY  OH 
+##   5  23   7   9  32  12   9   2   9  19   1   5   3   3   4   2  16  15 
+##  OK  OR  PA  RI  SC  SD  TN  TX  UT  VA  VT  WA  WI  WV  WY 
+##   6  29  25   5   4   1   3  28   4  16  10  23  20   1   4</code></pre>
+<pre class="r"><code>#In this section, looking to clean up the &quot;City&quot; column.  Still looking for a more elequent code but for now creating subsets for each letter and visually identifying misspellings, abbreviations, and/or punctuations.  Rajat to research a function that creates a subset of cities by subsetting cities with the same 3 letter string.
+unique(breweries[grep(&quot;[.]&quot;, breweries$City), &quot;City&quot;])</code></pre>
+<pre><code>## [1] St. Paul     Mt. Airy     St. John's   Mt. Pleasant
+## 384 Levels: Abingdon Abita Springs Ada Afton Airway Heights ... York</code></pre>
+<pre class="r"><code>unique(breweries[grep(&quot;^[Mm].*&quot;, breweries$City), &quot;City&quot;])</code></pre>
+<pre><code>##  [1] Minneapolis        Marquette          Martinsville      
+##  [4] Michigan City      Mishawaka          Murphysboro       
+##  [7] Manhattan          Mt. Airy           Madison           
+## [10] Morganton          Milwaukee          Monroe            
+## [13] Middleton          Middleburg Heights Memphis           
+## [16] Mount Pleasant     Middlebury         Montauk           
+## [19] Mill Valley        Meridian           Meadville         
+## [22] Missoula           Monument           Midvale           
+## [25] Mustang            Midwest City       Menominee         
+## [28] Manheim            Mt. Pleasant       Miami             
+## [31] Moab               Macon              Medford           
+## [34] Menominie          Minnetonka         Marietta          
+## [37] Mooresville        Marlborough        Myrtle Beach      
+## [40] Mammoth Lakes     
+## 384 Levels: Abingdon Abita Springs Ada Afton Airway Heights ... York</code></pre>
+<pre class="r"><code>unique(breweries[grep(&quot;^[Ss].*&quot;, breweries$City), &quot;City&quot;])</code></pre>
+<pre><code>##  [1] San Diego           San Francisco       South Lyon         
+##  [4] Seven Points        Stevens Point       St. Paul           
+##  [7] Saint Louis         San Antonio         St Petersburg      
+## [10] Sheridan            St Mary's           St Paul            
+## [13] Springdale          Sisters             Salt Lake City     
+## [16] Shelburne           Spring Lake         Springfield        
+## [19] Seattle             Spearfish           Stillwater         
+## [22] Stamford            Southampton         Santa Cruz         
+## [25] Somerset Center     South Austin        Shreveport         
+## [28] South Deerfield     South Burlington    St. John's         
+## [31] Santee              South Bend          San Luis Obispo    
+## [34] Shelbyville         Santa Fe            Sacramento         
+## [37] Savannah            Slippery Rock       Stratford          
+## [40] Soldotna            South San Francisco Spirit Lake        
+## [43] Sheffield           Silverton           Stevensville       
+## [46] Smithton           
+## 384 Levels: Abingdon Abita Springs Ada Afton Airway Heights ... York</code></pre>
+<pre class="r"><code>#With State and City cleaned up, we check for duplicates breweries by matching the name, each's city, than state. 
+BrDF &lt;- read.csv(&quot;Breweries.csv&quot;, header = T, stringsAsFactors = F)
+
+grep(&quot;[[:punct:]]&quot;,BrDF$City, value = T)</code></pre>
+<pre><code>## [1] &quot;St. Paul&quot;      &quot;Mt. Airy&quot;      &quot;Wilkes-Barre&quot;  &quot;St Mary's&quot;    
+## [5] &quot;St. John's&quot;    &quot;Fuquay-Varina&quot; &quot;Mt. Pleasant&quot;  &quot;O'Fallon&quot;</code></pre>
+<pre class="r"><code>grep(&quot;[[:punct:][:blank:]]+&quot;,BrDF$City, value = T)</code></pre>
+<pre><code>##   [1] &quot;San Diego&quot;           &quot;San Francisco&quot;       &quot;Grand Rapids&quot;       
+##   [4] &quot;Grand Rapids&quot;        &quot;Comstock Park&quot;       &quot;South Lyon&quot;         
+##   [7] &quot;Grand Rapids&quot;        &quot;Michigan City&quot;       &quot;Seven Points&quot;       
+##  [10] &quot;Kansas City&quot;         &quot;Stevens Point&quot;       &quot;San Diego&quot;          
+##  [13] &quot;San Francisco&quot;       &quot;Dripping Springs&quot;    &quot;East Fairfield&quot;     
+##  [16] &quot;Paso Robles&quot;         &quot;St. Paul&quot;            &quot;Saint Louis&quot;        
+##  [19] &quot;Brooklyn Center&quot;     &quot;San Antonio&quot;         &quot;St Petersburg&quot;      
+##  [22] &quot;Mt. Airy&quot;            &quot;San Francisco&quot;       &quot;Fort Collins&quot;       
+##  [25] &quot;Traverse City&quot;       &quot;East Windsor&quot;        &quot;Wilkes-Barre&quot;       
+##  [28] &quot;San Diego&quot;           &quot;Lone Tree&quot;           &quot;North Woodstock&quot;    
+##  [31] &quot;St Mary's&quot;           &quot;Stevens Point&quot;       &quot;St Paul&quot;            
+##  [34] &quot;Cold Spring&quot;         &quot;Baton Rouge&quot;         &quot;Salt Lake City&quot;     
+##  [37] &quot;Fort Worth&quot;          &quot;Traverse City&quot;       &quot;West Chester&quot;       
+##  [40] &quot;Garden City&quot;         &quot;White Salmon&quot;        &quot;New Orleans&quot;        
+##  [43] &quot;Fort Worth&quot;          &quot;Oklahoma City&quot;       &quot;Spring Lake&quot;        
+##  [46] &quot;Paw Paw&quot;             &quot;Oklahoma City&quot;       &quot;San Antonio&quot;        
+##  [49] &quot;San Diego&quot;           &quot;Farmers Branch&quot;      &quot;Cherry Hill&quot;        
+##  [52] &quot;Atlantic Highlands&quot;  &quot;Middleburg Heights&quot;  &quot;Lake Geneva&quot;        
+##  [55] &quot;Lake Havasu City&quot;    &quot;Los Angeles&quot;         &quot;College Station&quot;    
+##  [58] &quot;Plant City&quot;          &quot;Santa Cruz&quot;          &quot;Somerset Center&quot;    
+##  [61] &quot;South Austin&quot;        &quot;Mount Pleasant&quot;      &quot;Bridgewater Corners&quot;
+##  [64] &quot;South Deerfield&quot;     &quot;Mill Valley&quot;         &quot;Ridgefield Park&quot;    
+##  [67] &quot;Port Clinton&quot;        &quot;San Diego&quot;           &quot;Idaho Springs&quot;      
+##  [70] &quot;Salt Lake City&quot;      &quot;South Burlington&quot;    &quot;Virginia Beach&quot;     
+##  [73] &quot;Garden City&quot;         &quot;San Francisco&quot;       &quot;Black Mountain&quot;     
+##  [76] &quot;Saint Louis&quot;         &quot;Diamond Springs&quot;     &quot;St. John's&quot;         
+##  [79] &quot;Boynton Beach&quot;       &quot;South Bend&quot;          &quot;Green Bay&quot;          
+##  [82] &quot;San Luis Obispo&quot;     &quot;Fuquay-Varina&quot;       &quot;Lake Barrington&quot;    
+##  [85] &quot;San Francisco&quot;       &quot;Buena Vista&quot;         &quot;Midwest City&quot;       
+##  [88] &quot;Mt. Pleasant&quot;        &quot;Airway Heights&quot;      &quot;Santa Fe&quot;           
+##  [91] &quot;Ann Arbor&quot;           &quot;Eau Claire&quot;          &quot;San Diego&quot;          
+##  [94] &quot;Stevens Point&quot;       &quot;Saint Louis&quot;         &quot;Slippery Rock&quot;      
+##  [97] &quot;Santa Cruz&quot;          &quot;Traverse City&quot;       &quot;Royal Oak&quot;          
+## [100] &quot;Fort Collins&quot;        &quot;O'Fallon&quot;            &quot;Vadnais Heights&quot;    
+## [103] &quot;Half Moon Bay&quot;       &quot;San Diego&quot;           &quot;South San Francisco&quot;
+## [106] &quot;Jacksonville Beach&quot;  &quot;Tampa Bay&quot;           &quot;San Antonio&quot;        
+## [109] &quot;Spirit Lake&quot;         &quot;Gig Harbor&quot;          &quot;Des Moines&quot;         
+## [112] &quot;New York&quot;            &quot;Green Bay&quot;           &quot;Fort Wayne&quot;         
+## [115] &quot;Lake Havasu City&quot;    &quot;Colorado Springs&quot;    &quot;San Diego&quot;          
+## [118] &quot;Myrtle Beach&quot;        &quot;Santa Cruz&quot;          &quot;New York&quot;           
+## [121] &quot;Eau Claire&quot;          &quot;Abita Springs&quot;       &quot;Mammoth Lakes&quot;      
+## [124] &quot;Battle Creek&quot;        &quot;North Conway&quot;</code></pre>
+<pre class="r"><code>grep(&quot;^..[[:punct:][:blank:]]+&quot;,BrDF$City, value = T)</code></pre>
+<pre><code>## [1] &quot;St. Paul&quot;      &quot;St Petersburg&quot; &quot;Mt. Airy&quot;      &quot;St Mary's&quot;    
+## [5] &quot;St Paul&quot;       &quot;St. John's&quot;    &quot;Mt. Pleasant&quot;</code></pre>
+<pre class="r"><code>BrDF$City &lt;- gsub(&quot;^St[[:punct:][:blank:]]+&quot;,&quot;Saint &quot;,BrDF$City)
+BrDF$City &lt;- gsub(&quot;^Mt[[:punct:][:blank:]]+&quot;,&quot;Mount &quot;,BrDF$City)
+
+uniTempVec &lt;- unique(BrDF$City)
+tempListVec &lt;- character()
+for(i in 1:length(uniTempVec)){
+  subTobeSearched &lt;- substr(uniTempVec[i], 1,3)
+  subTobeSearched &lt;- paste0(&quot;^&quot;,subTobeSearched)
+  tempVec &lt;- unique(grep(subTobeSearched, uniTempVec, ignore.case = T, value = T))
+  if(length(tempVec) &gt; 1){
+    tempListVec &lt;- c(tempListVec, paste(&quot; &quot;, tempVec, collapse = &quot; &quot;))
+  }
+}
+
+unitempListVec &lt;- unique(tempListVec)
+temp3Vec &lt;- character()
+for(i in 1:length(unitempListVec)){
+  temp3Vec &lt;- character()
+  temp2Vec &lt;- as.vector(unlist(strsplit(trimws(unitempListVec[i], &quot;l&quot;), &quot;   &quot;)))
+  for (j in 1:length(temp2Vec)){
+    temp3Vec &lt;- c(temp3Vec,unique(as.character(BrDF[BrDF$City == temp2Vec[j], &quot;State&quot;])))
+  }
+  if(length(unique(temp3Vec)) != length(temp3Vec)){
+    print(as.data.frame(sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))))
+  }
+}</code></pre>
+<pre><code>##             sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Minneapolis                                                                  MN
+## Minnetonka                                                                   MN
+##                 sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## San Diego                                                                        CA
+## San Francisco                                                                    CA
+## San Antonio                                                                      TX
+## Santa Cruz                                                                       CA
+## Santee                                                                           CA
+## San Luis Obispo                                                                  CA
+## Santa Fe                                                                         NM
+##   Marquette Martinsville Marietta Marlborough
+## 1        MI           IN       GA          MA
+## 2        MA           IN       GA          MA
+##                 sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Brooklyn                                                                         NY
+## Brooklyn Center                                                                  MN
+## Broomfield                                                                       CO
+## Bronx                                                                            NY
+##              sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Westerly                                                                      RI
+## Weston                                                                        MO
+## West Chester                                                                  PA
+## Westminster                                                                   MA
+## Westfield                                                                     MA
+##   Newport New.Orleans Newburgh New.York Newburyport
+## 1      RI          LA       NY       NY          MA
+## 2      OR          LA       NY       NY          MA
+##           sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Lone Tree                                                                  CO
+## Longmont                                                                   CO
+##                 sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## North Woodstock                                                                  NH
+## Norfolk                                                                          VA
+## Northamtpon                                                                      MA
+## North Conway                                                                     NH
+##   Ashland Ashburn Asheville
+## 1      VA      VA        NC
+## 2      OR      VA        NC
+##           sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Tampa                                                                      FL
+## Tampa Bay                                                                  FL
+##           sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Lansdale                                                                   PA
+## Lancaster                                                                  PA
+##   Jackson Jacksonville Jacksonville.Beach
+## 1      WY           FL                 FL
+## 2      MS           FL                 FL
+##           sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Menominee                                                                  WI
+## Menominie                                                                  WI</code></pre>
+<pre class="r"><code>## Do corrections to City Names or State Names
+# COrrections 
+BrDF[BrDF$City == &quot;Menominee&quot;, 'City'] &lt;- &quot;Menomonie&quot;
+BrDF[BrDF$City == &quot;Menominie&quot;, 'City'] &lt;- &quot;Menomonie&quot;
+# Remove leading white space from State col
+BrDF$State &lt;- trimws(BrDF$State, &quot;l&quot;)
+# City Marquette is in MI and not MA
+BrDF[BrDF$City == &quot;Marquette&quot; &amp; BrDF$State == &quot;MA&quot;, 'State'] &lt;- &quot;MI&quot;</code></pre>
+<pre class="r"><code># Match Last 3 Chars
+uniTempVec &lt;- unique(BrDF$City)
+tempListVec &lt;- character()
+for(i in 1:length(uniTempVec)){
+  subTobeSearched &lt;- substr(uniTempVec[i], nchar(uniTempVec[i]) - 3, nchar(uniTempVec[i]))
+  subTobeSearched &lt;- paste0(subTobeSearched,&quot;$&quot;)
+  tempVec &lt;- unique(grep(subTobeSearched, uniTempVec,ignore.case = T, value = T))
+  if(length(tempVec) &gt; 1){
+    tempListVec &lt;- c(tempListVec, paste(&quot; &quot;, tempVec, collapse = &quot; &quot;))
+  }
+}
+
+unitempListVec &lt;- unique(tempListVec)
+temp3Vec &lt;- character()
+for(i in 1:length(unitempListVec)){
+  temp3Vec &lt;- character()
+  temp2Vec &lt;- as.vector(unlist(strsplit(trimws(unitempListVec[i], &quot;l&quot;), &quot;   &quot;)))
+  for (j in 1:length(temp2Vec)){
+    temp3Vec &lt;- c(temp3Vec,unique(as.character(BrDF[BrDF$City == temp2Vec[j], &quot;State&quot;])))
+  }
+  if(length(unique(temp3Vec)) != length(temp3Vec)){
+    print(as.data.frame(sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))))
+  }
+}</code></pre>
+<pre><code>##   Louisville Evansville Martinsville Bargersville Troutville Roseville
+## 1         KY         IN           IN           IN         VA        MN
+## 2         KY         IN           IN           IN         VA        MN
+##   Warrenville Phoenixville Boonville Waynesville Charlottesville
+## 1          IL           PA        CA          NC              VA
+## 2          IL           PA        CA          NC              VA
+##   Greenville Danville Woodinville Nashville Meadville Shelbyville
+## 1         SC       PA          WA        TN        PA          IN
+## 2         DE       PA          WA        TN        PA          IN
+##   Jacksonville Hudsonville Huntsville Biglerville Asheville Gainesville
+## 1           FL          MI         AL          PA        NC          FL
+## 2           FL          MI         AL          PA        NC          FL
+##   Knoxville Stevensville Mooresville Libertyville Garrattsville
+## 1        IA           MT          NC           IL            NY
+## 2        IA           MT          NC           IL            NY
+##                     sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## San Francisco                                                                        CA
+## South San Francisco                                                                  CA
+##   Holland Portland Pineland Ashland Loveland Cleveland Lockland Cortland
+## 1      MI       ME       ME      VA       CO        OH       OH       NE
+## 2      MI       OR       ME      OR       CO        OH       OH       NE
+##   Plainfield East.Fairfield Bloomfield Springfield Broomfield
+## 1         IN             VT         CT          MO         CO
+## 2         IN             VT         CT          OR         CO
+##   South.Deerfield Westfield Sheffield
+## 1              MA        MA        MA
+## 2              MA        MA        MA
+##                  sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Michigan City                                                                     IN
+## Kansas City                                                                       MO
+## Traverse City                                                                     MI
+## Salt Lake City                                                                    UT
+## Garden City                                                                       ID
+## Oklahoma City                                                                     OK
+## Lake Havasu City                                                                  AZ
+## Plant City                                                                        FL
+## Midwest City                                                                      OK
+##                  sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Dripping Springs                                                                  TX
+## Idaho Springs                                                                     CO
+## Diamond Springs                                                                   CA
+## Colorado Springs                                                                  CO
+## Abita Springs                                                                     LA
+##           sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Lemont                                                                     IL
+## Longmont                                                                   CO
+## Claremont                                                                  CA
+## Belmont                                                                    CA
+##   Bloomington Lexington Washington South.Burlington Wilmington Burlington
+## 1          IL        KY         DC               VT         DE         VT
+## 2          IN        VA         DC               VT         DE         VT
+##   Lake.Barrington Arrington Covington
+## 1              IL        VA        LA
+## 2              IL        VA        LA
+##              sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Austin                                                                        TX
+## South Austin                                                                  TX
+##   West.Chester Rochester Gloucester Westminster Worcester Leominster
+## 1           PA        MI         MA          MA        MA         MA
+## 2           PA        NY         MA          MA        MA         MA
+##   Lancaster
+## 1        PA
+## 2        PA
+##            sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Nellysford                                                                  VA
+## Stamford                                                                    CT
+## Stratford                                                                   CT
+## Medford                                                                     OR
+##            sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Waterbury                                                                   VT
+## Middlebury                                                                  VT
+##                    sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, &quot;State&quot;]))
+## Virginia Beach                                                                      VA
+## Boynton Beach                                                                       FL
+## Jacksonville Beach                                                                  FL
+## Myrtle Beach                                                                        SC</code></pre>
+<pre class="r"><code># No corrections after last 3 match</code></pre>
+<pre class="r"><code>as.data.frame(table(BrDF$Name))[as.data.frame(table(BrDF$Name))$Freq &gt; 1, ]</code></pre>
+<pre><code>##                        Var1 Freq
+## 71       Blackrocks Brewery    2
+## 75    Blue Mountain Brewery    2
+## 298 Lucette Brewing Company    2
+## 368     Oskar Blues Brewery    2
+## 370     Otter Creek Brewing    2
+## 443 Sly Fox Brewing Company    2
+## 466  Summit Brewing Company    2</code></pre>
+<pre class="r"><code># Remove Dups if needed
+#BrDF &lt;- BrDF[!duplicated(BrDF[,c(&quot;Name&quot;,&quot;City&quot;,&quot;State&quot;)]), ]</code></pre>
+<pre class="r"><code>## Look for duplicates in Brewry Name
+## Match first 3
+uniTempVec &lt;- unique(BrDF$Name)
+tempListVec &lt;- character()
+for(i in 1:length(uniTempVec)){
+  subTobeSearched &lt;- substr(uniTempVec[i], 1,3)
+  subTobeSearched &lt;- paste0(&quot;^&quot;,subTobeSearched)
+  tempVec &lt;- unique(grep(subTobeSearched, uniTempVec,ignore.case = T, value = T))
+  if(length(tempVec) &gt; 1){
+    tempListVec &lt;- c(tempListVec, paste(&quot; &quot;, tempVec, collapse = &quot; &quot;))
+  }
+}
+
+unitempListVec &lt;- unique(tempListVec)
+temp3Vec &lt;- character()
+for(i in 1:length(unitempListVec)){
+  temp3Vec &lt;- character()
+  temp2Vec &lt;- trimws(as.vector(unlist(strsplit(trimws(unitempListVec[i], &quot;l&quot;), &quot;   &quot;))), &quot;l&quot;)
+  for (j in 1:length(temp2Vec)){
+    temp3Vec &lt;- c(temp3Vec,unique(paste(BrDF[BrDF$Name == temp2Vec[j], &quot;City&quot;], BrDF[BrDF$Name == temp2Vec[j], &quot;State&quot;], sep = &quot;+&quot;)))
+  }
+  if(length(unique(temp3Vec)) != length(temp3Vec)){
+    print(as.data.frame(sapply(temp2Vec, function(x) paste(BrDF[BrDF$Name == x, &quot;City&quot;], BrDF[BrDF$Name == x, &quot;State&quot;], sep = &quot;+&quot;))))
+  }
+}</code></pre>
+<pre><code>##                           sapply(temp2Vec, function(x) paste(BrDF[BrDF$Name == x, &quot;City&quot;], BrDF[BrDF$Name == x, &quot;State&quot;], sep = &quot;+&quot;))
+## Against the Grain Brewery                                                                                               Louisville+KY
+## Against The Grain Brewery                                                                                               Louisville+KY
+##                                   sapply(temp2Vec, function(x) paste(BrDF[BrDF$Name == x, &quot;City&quot;], BrDF[BrDF$Name == x, &quot;State&quot;], sep = &quot;+&quot;))
+## Great Divide Brewing Company                                                                                                        Denver+CO
+## Grey Sail Brewing Company                                                                                                         Westerly+RI
+## Greenbrier Valley Brewing Company                                                                                                Lewisburg+WV
+## Great Crescent Brewery                                                                                                              Aurora+IN
+## Great Raft Brewing Company                                                                                                      Shreveport+LA
+## Great River Brewery                                                                                                              Davenport+IA
+## Grey Sail Brewing of Rhode Island                                                                                                 Westerly+RI
+## Green Room Brewing                                                                                                            Jacksonville+FL
+## Great Northern Brewing Company                                                                                                   Whitefish+MT
+##                                 sapply(temp2Vec, function(x) paste(BrDF[BrDF$Name == x, &quot;City&quot;], BrDF[BrDF$Name == x, &quot;State&quot;], sep = &quot;+&quot;))
+## The Mitten Brewing Company                                                                                                  Grand Rapids+MI
+## The Dudes' Brewing Company                                                                                                      Torrance+CA
+## The Lion Brewery                                                                                                            Wilkes-Barre+PA
+## The Brewer's Art                                                                                                               Baltimore+MD
+## The Alchemist                                                                                                                  Waterbury+VT
+## The Just Beer Project                                                                                                         Burlington+VT
+## The Bronx Brewery                                                                                                                  Bronx+NY
+## The Traveler Beer Company                                                                                                     Burlington+VT
+## The Right Brain Brewery                                                                                                    Traverse City+MI
+## The Black Tooth Brewing Company                                                                                                 Sheridan+WY
+## The Manhattan Brewing Company                                                                                                   New York+NY
+##                               sapply(temp2Vec, function(x) paste(BrDF[BrDF$Name == x, &quot;City&quot;], BrDF[BrDF$Name == x, &quot;State&quot;], sep = &quot;+&quot;))
+## Hopworks Urban Brewery                                                                                                        Portland+OR
+## Hops &amp; Grains Brewing Company                                                                                                   Austin+TX
+## Hop Valley Brewing Company                                                                                                 Springfield+OR
+## Hop Farm Brewing Company                                                                                                    Pittsburgh+PA
+## Hops &amp; Grain Brewery                                                                                                            Austin+TX
+##                              sapply(temp2Vec, function(x) paste(BrDF[BrDF$Name == x, &quot;City&quot;], BrDF[BrDF$Name == x, &quot;State&quot;], sep = &quot;+&quot;))
+## Goose Island Brewing Company                                                                                                  Chicago+IL
+## Goodlife Brewing Co.                                                                                                             Bend+OR
+## Goose Island Brewery Company                                                                                                  Chicago+IL
+## Good Life Brewing Company                                                                                                        Bend+OR
+## Good People Brewing Company                                                                                                Birmingham+AL
+##                                sapply(temp2Vec, function(x) paste(BrDF[BrDF$Name == x, &quot;City&quot;], BrDF[BrDF$Name == x, &quot;State&quot;], sep = &quot;+&quot;))
+## Catawba Valley Brewing Company                                                                                                Morganton+NC
+## Catawba Island Brewing                                                                                                     Port Clinton+OH
+## Catawba Brewing Company                                                                                                       Morganton+NC
+##                              sapply(temp2Vec, function(x) paste(BrDF[BrDF$Name == x, &quot;City&quot;], BrDF[BrDF$Name == x, &quot;State&quot;], sep = &quot;+&quot;))
+## Angry Minnow                                                                                                                  Hayward+WI
+## Angry Orchard Cider Company                                                                                                Cincinnati+OH
+## Angry Minnow Brewing Company                                                                                                  Hayward+WI</code></pre>
+<pre class="r"><code># Do corrections here
+BrDF[BrDF$Name == &quot;Against the Grain Brewery&quot;, &quot;Name&quot;] &lt;- &quot;Against The Grain Brewery&quot;
+BrDF[BrDF$Name == &quot;Grey Sail Brewing of Rhode Island&quot;, &quot;Name&quot;] &lt;- &quot;Grey Sail Brewing Company&quot;
+BrDF[BrDF$Name == &quot;Hops &amp; Grains Brewing Company&quot;, &quot;Name&quot;] &lt;- &quot;Hops &amp; Grain Brewery&quot;
+BrDF[BrDF$Name == &quot;Goose Island Brewery Company&quot;, &quot;Name&quot;] &lt;- &quot;Goose Island Brewing Company&quot;
+BrDF[BrDF$Name == &quot;Goodlife Brewing Co.&quot;, &quot;Name&quot;] &lt;- &quot;Good Life Brewing Company&quot;
+BrDF[BrDF$Name == &quot;Catawba Brewing Company&quot;, &quot;Name&quot;] &lt;- &quot;Catawba Valley Brewing Company&quot;
+BrDF[BrDF$Name == &quot;Angry Minnow&quot;, &quot;Name&quot;] &lt;- &quot;Angry Minnow Brewing Company&quot;
+
+#Write Clean File
+write.csv(BrDF, file = &quot;CleanedBreweryData.csv&quot;, row.names = F)</code></pre>
+</div>
+</div>
 <div id="guiding-questions" class="section level1">
 <h1>Guiding Questions</h1>
-<div id="breweries-per-state" class="section level3">
-<h3>Breweries per state</h3>
-<p>The 558 breweries are spread among “# of States”. The most breweries are located in “state”.</p>
-<pre class="r"><code>#Q2 - Merge Beer and Breweries files by Brew_ID and count of Breweries by State
+<div id="first-6-last-6" class="section level3">
+<h3>First 6, Last 6</h3>
+<p>The files were merged and some of the observations are seen below. The data gathered includes…</p>
+<pre class="r"><code>#Q2 - Merge Beer and Breweries files by Brew_ID (Assumes Beers.csv file has renamed Brewery_ID to Brew_ID) and prints the first/last 6 observations.
 beers &lt;- read.csv(&quot;CleanedBeerData.csv&quot;, header = TRUE)
 breweries &lt;- read.csv(&quot;CleanedBreweryData.csv&quot;, header = TRUE)
 master.file &lt;- Reduce(function(beers, breweries) merge(beers, breweries, by=&quot;Brew_ID&quot;), list(beers, breweries))
+names(master.file) &lt;- c(&quot;Brewery_id&quot;, &quot;Beer_name&quot;, &quot;Beer_id&quot;, &quot;ABV&quot;, &quot;IBU&quot;, &quot;Style&quot;, &quot;Ounces&quot;, &quot;Brewery_name&quot;, &quot;City&quot;, &quot;State&quot;)
 write.csv(master.file, file = &quot;masterfile.csv&quot;, row.names = FALSE)
-state.count &lt;- as.data.frame(table(master.file$State))
+head(master.file,6)</code></pre>
+<pre><code>##   Brewery_id     Beer_name Beer_id   ABV IBU
+## 1          1  Get Together    2692 0.045  50
+## 2          1 Maggie's Leap    2691 0.049  26
+## 3          1    Wall's End    2690 0.048  19
+## 4          1       Pumpion    2689 0.060  38
+## 5          1    Stronghold    2688 0.060  25
+## 6          1   Parapet ESB    2687 0.056  47
+##                                 Style Ounces       Brewery_name
+## 1                        American IPA     16 NorthGate Brewing 
+## 2                  Milk / Sweet Stout     16 NorthGate Brewing 
+## 3                   English Brown Ale     16 NorthGate Brewing 
+## 4                         Pumpkin Ale     16 NorthGate Brewing 
+## 5                     American Porter     16 NorthGate Brewing 
+## 6 Extra Special / Strong Bitter (ESB)     16 NorthGate Brewing 
+##          City State
+## 1 Minneapolis    MN
+## 2 Minneapolis    MN
+## 3 Minneapolis    MN
+## 4 Minneapolis    MN
+## 5 Minneapolis    MN
+## 6 Minneapolis    MN</code></pre>
+<pre class="r"><code>tail(master.file,6)</code></pre>
+<pre><code>##      Brewery_id                 Beer_name Beer_id   ABV IBU
+## 2361        556             Pilsner Ukiah      98 0.055  NA
+## 2362        557  Heinnieweisse Weissebier      52 0.049  NA
+## 2363        557           Snapperhead IPA      51 0.068  NA
+## 2364        557         Moo Thunder Stout      50 0.049  NA
+## 2365        557         Porkslap Pale Ale      49 0.043  NA
+## 2366        558 Urban Wilderness Pale Ale      30 0.049  NA
+##                        Style Ounces                  Brewery_name
+## 2361         German Pilsener     12         Ukiah Brewing Company
+## 2362              Hefeweizen     12       Butternuts Beer and Ale
+## 2363            American IPA     12       Butternuts Beer and Ale
+## 2364      Milk / Sweet Stout     12       Butternuts Beer and Ale
+## 2365 American Pale Ale (APA)     12       Butternuts Beer and Ale
+## 2366        English Pale Ale     12 Sleeping Lady Brewing Company
+##               City State
+## 2361         Ukiah    CA
+## 2362 Garrattsville    NY
+## 2363 Garrattsville    NY
+## 2364 Garrattsville    NY
+## 2365 Garrattsville    NY
+## 2366     Anchorage    AK</code></pre>
+</div>
+<div id="number-of-nas" class="section level3">
+<h3>Number of NA’s</h3>
+<p>Once the data was cleaned and combined, there were still data that showed incomplete. These include 997 IBU ratings and 62 ABV marks, as seen below.</p>
+<pre class="r"><code>#Q3 - Summing the NA's for each column
+colSums(is.na(master.file))</code></pre>
+<pre><code>##   Brewery_id    Beer_name      Beer_id          ABV          IBU 
+##            0            0            0           62          997 
+##        Style       Ounces Brewery_name         City        State 
+##            0            0            0            0            0</code></pre>
+</div>
+<div id="breweries-per-state" class="section level3">
+<h3>Breweries per state</h3>
+<p>The 558 breweries are spread among all 50 states and includes District of Columbia for a total of 51. The most breweries are located in in Colorado (259). Other states with at least 100 breweries include: Pennsylvania (100), Oregon (114), Texas (130), Indiana (138), Michigan (162), and California (181).</p>
+<pre class="r"><code>state.count &lt;- as.data.frame(table(master.file$State))
 names(state.count) &lt;- c(&quot;State&quot;, &quot;Brewery_Count&quot;)
 statesSort &lt;- state.count[order(state.count$Brewery_Count),]
 statesSort</code></pre>
@@ -202,31 +757,9 @@ StateCount &lt;- ggplot(statesSort, aes(reorder(State, -Brewery_Count), Brewery_
 StateCount</code></pre>
 <p><img src="data:image/png;base64,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" /><!-- --></p>
 </div>
-<div id="first-6-last-6" class="section level3">
-<h3>First 6, Last 6</h3>
-<p>Some of the observations are seen below. The data gathered includes</p>
-<pre class="rq2"><code>#Q2 - Merge Beer and Breweries files by Brew_ID and prints the first/last 6 observations.
-beers &lt;- read.csv(&quot;Beers.csv&quot;, header = TRUE)
-names(breweries) &lt;- c(&quot;Brewery_id&quot;, &quot;Name&quot;, &quot;City&quot;, &quot;State&quot;)
-master.file &lt;- Reduce(function(beers, breweries) merge(beers, breweries, by=&quot;Brewery_id&quot;), list(beers, breweries))
-names(master.file) &lt;- c(&quot;Brewery_id&quot;, &quot;Beer_name&quot;, &quot;Beer_id&quot;, &quot;ABV&quot;, &quot;IBU&quot;, &quot;Style&quot;, &quot;Ounces&quot;, &quot;Brewery_name&quot;, &quot;City&quot;, &quot;State&quot;)
-head(master.file,6)
-tail(master.file,6)
-write.csv(master.file, file = &quot;masterfile.csv&quot;, row.names = FALSE)</code></pre>
-</div>
-<div id="number-of-nas" class="section level3">
-<h3>Number of NA’s</h3>
-<p>Some of the data was incomplete. A summary of incomplete information is shown below.</p>
-<pre class="r"><code>#Q3 - Summing the NA's for each column
-colSums(is.na(master.file))</code></pre>
-<pre><code>## Brew_ID  Name.x Beer_ID     ABV     IBU   Style  Ounces  Name.y    City 
-##       0       0       0      62     997       0       0       0       0 
-##   State 
-##       0</code></pre>
-</div>
-<div id="median-alcohol-content-international-bitterness-unti-ibu-for-each-state" class="section level3">
-<h3>Median Alcohol Content &amp; International Bitterness Unti (IBU) for each state</h3>
-<p>The median amount of alcohol content and IBUs in each state is listed below. “Add Info about scatterplot”</p>
+<div id="median-alcohol-content-international-bitterness-units-ibu-for-each-state" class="section level3">
+<h3>Median Alcohol Content &amp; International Bitterness Units (IBU) for each state</h3>
+<p>The median amount of alcohol content and IBUs in each state is listed below. “Add Info about data”</p>
 <pre class="rq4"><code>medianIBUABV&lt;-aggregate.data.frame(master.file[, 4:5], list(master.file$State), median, na.rm=TRUE)
 states&lt;-rep(medianIBUABV$Group.1,2)
 values&lt;-c(medianIBUABV$ABV, medianIBUABV$IBU)
