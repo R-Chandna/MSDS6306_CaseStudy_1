@@ -230,9 +230,10 @@ unique(breweries[grep("^[Ss].*", breweries$City), "City"])
 
 
 ```r
-#With State and City cleaned up, we check for duplicates breweries by matching the name, each's city, than state. 
+#Data Exploration Done, Cleaning begins   
 BrDF <- read.csv("Breweries.csv", header = T, stringsAsFactors = F)
-
+# First find and substitute any abbreviations symbols as "." with full form. Ex St. would be replaced
+# with Saint, Mt. would be replaced with Mount etc
 grep("[[:punct:]]",BrDF$City, value = T)
 ```
 
@@ -303,6 +304,17 @@ grep("^..[[:punct:][:blank:]]+",BrDF$City, value = T)
 BrDF$City <- gsub("^St[[:punct:][:blank:]]+","Saint ",BrDF$City)
 BrDF$City <- gsub("^Mt[[:punct:][:blank:]]+","Mount ",BrDF$City)
 
+# Thje purpose of below code is to catch cities that could be misspelled or are located in 
+# different state than what got entered by mistake.
+# The logic is that if City Name starts with same characters, and later gets off by few charcters
+# then the following code would catch such cities and list their states. If Thier States and Brewery Name
+# Also Matches then these could be misspellings. The same loop would be repeated to match cities that end with 
+# same characters as these could be misspelled in their starting characters.
+
+# Loop through every Unique city in City column, extract its first 3 characters,
+# append ^ in front of it so as to make RegEx for the search. Search for all other
+# Cities that start with Same 3 Characters. If more than 1 matching City is found
+# append that city to running Vector(kind of appending to List)
 uniTempVec <- unique(BrDF$City)
 tempListVec <- character()
 for(i in 1:length(uniTempVec)){
@@ -314,6 +326,8 @@ for(i in 1:length(uniTempVec)){
   }
 }
 
+# List the States for such cities with matching first 3 chars. If state is also same,
+# manually inspect brewery Names, to find potential misspellings.
 unitempListVec <- unique(tempListVec)
 temp3Vec <- character()
 for(i in 1:length(unitempListVec)){
@@ -384,8 +398,8 @@ for(i in 1:length(unitempListVec)){
 
 
 ```r
-## Do corrections to City Names or State Names
-# COrrections 
+## Do corrections to City Names or State Names, If above code find issues.
+# Corrections 
 BrDF[BrDF$City == "Menominee", 'City'] <- "Menomonie"
 BrDF[BrDF$City == "Menominie", 'City'] <- "Menomonie"
 # Remove leading white space from State col
@@ -396,7 +410,8 @@ BrDF[BrDF$City == "Marquette" & BrDF$State == "MA", 'State'] <- "MI"
 
 
 ```r
-# Match Last 3 Chars
+# Now, repeat the above process to find potential missppelled cities based upon 
+# Match of Last 3 Chars
 uniTempVec <- unique(BrDF$City)
 tempListVec <- character()
 for(i in 1:length(uniTempVec)){
@@ -503,10 +518,219 @@ for(i in 1:length(unitempListVec)){
 
 ```r
 # No corrections after last 3 match
+
+# Repeating above code to find cities with initial 2 chars match
+uniTempVec <- unique(BrDF$City)
+tempListVec <- character()
+for(i in 1:length(uniTempVec)){
+  subTobeSearched <- substr(uniTempVec[i], 1,2)
+  subTobeSearched <- paste0("^",subTobeSearched)
+  tempVec <- unique(grep(subTobeSearched, uniTempVec, ignore.case = T, value = T))
+  if(length(tempVec) > 1){
+    tempListVec <- c(tempListVec, paste(" ", tempVec, collapse = " "))
+  }
+}
+
+unitempListVec <- unique(tempListVec)
+temp3Vec <- character()
+for(i in 1:length(unitempListVec)){
+  temp3Vec <- character()
+  temp2Vec <- as.vector(unlist(strsplit(trimws(unitempListVec[i], "l"), "   ")))
+  for (j in 1:length(temp2Vec)){
+    temp3Vec <- c(temp3Vec,unique(as.character(BrDF[BrDF$City == temp2Vec[j], "State"])))
+  }
+  if(length(unique(temp3Vec)) != length(temp3Vec)){
+    print(as.data.frame(sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, "State"]))))
+  }
+}
+```
+
+```
+##                    sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, "State"]))
+## Minneapolis                                                                         MN
+## Michigan City                                                                       IN
+## Mishawaka                                                                           IN
+## Milwaukee                                                                           WI
+## Middleton                                                                           WI
+## Middleburg Heights                                                                  OH
+## Middlebury                                                                          VT
+## Mill Valley                                                                         CA
+## Missoula                                                                            MT
+## Midvale                                                                             UT
+## Midwest City                                                                        OK
+## Miami                                                                               FL
+## Minnetonka                                                                          MN
+##             sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, "State"]))
+## Louisville                                                                   KY
+## Lombard                                                                      IL
+## Lowell                                                                       MA
+## Lone Tree                                                                    CO
+## Loveland                                                                     CO
+## Longmont                                                                     CO
+## Los Angeles                                                                  CA
+## Lockland                                                                     OH
+##                  sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, "State"]))
+## San Diego                                                                         CA
+## San Francisco                                                                     CA
+## Saint Paul                                                                        MN
+## Saint Louis                                                                       MO
+## San Antonio                                                                       TX
+## Saint Petersburg                                                                  FL
+## Saint Mary's                                                                      PA
+## Salt Lake City                                                                    UT
+## Santa Cruz                                                                        CA
+## Saint John's                                                                      MI
+## Santee                                                                            CA
+## San Luis Obispo                                                                   CA
+## Santa Fe                                                                          NM
+## Sacramento                                                                        CA
+## Savannah                                                                          GA
+##                     sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, "State"]))
+## Bridgman                                                                             MI
+## Brooklyn                                                                             NY
+## Brooklyn Center                                                                      MN
+## Broomfield                                                                           CO
+## Bridgewater Corners                                                                  VT
+## Bronx                                                                                NY
+## Brevard                                                                              NC
+##          sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, "State"]))
+## Holland                                                                   MI
+## Hooksett                                                                  NH
+## Houghton                                                                  MI
+## Houston                                                                   TX
+##               sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, "State"]))
+## Marquette                                                                      MI
+## Martinsville                                                                   IN
+## Manhattan                                                                      KS
+## Madison                                                                        WI
+## Manheim                                                                        PA
+## Macon                                                                          GA
+## Marietta                                                                       GA
+## Marlborough                                                                    MA
+## Mammoth Lakes                                                                  CA
+##   Comstock.Park Columbus Conroe Cold.Spring Corvallis College.Station
+## 1            MI       IN     TX          MN        OR              TX
+## 2            MI       OH     TX          MN        OR              TX
+##   Conestoga Cortland Colorado.Springs Covington
+## 1        PA       NE               CO        LA
+## 2        PA       NE               CO        LA
+##                     sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, "State"]))
+## South Lyon                                                                           MI
+## Southampton                                                                          NY
+## Somerset Center                                                                      MI
+## South Austin                                                                         TX
+## South Deerfield                                                                      MA
+## South Burlington                                                                     VT
+## South Bend                                                                           IN
+## Soldotna                                                                             AK
+## South San Francisco                                                                  CA
+##               sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, "State"]))
+## Stevens Point                                                                  WI
+## Stillwater                                                                     MN
+## Stamford                                                                       CT
+## Stratford                                                                      CT
+## Stevensville                                                                   MT
+##             sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, "State"]))
+## Paso Robles                                                                  CA
+## Paw Paw                                                                      MI
+## Pawtucket                                                                    RI
+## Papillion                                                                    NE
+## Palisade                                                                     CO
+## Paonia                                                                       CO
+## Pacific                                                                      WA
+## Patchogue                                                                    NY
+## Pawcatuck                                                                    CT
+##   Atlanta Athens Atlantic.Highlands
+## 1      GA     OH                 NJ
+## 2      GA     GA                 NJ
+##   Roseville Rochester Rogers Roanoke Royal.Oak
+## 1        MN        MI     AR      VA        MI
+## 2        MN        NY     AR      VA        MI
+##   Mount.Airy Morganton Monroe Mount.Pleasant Montauk Monument Moab
+## 1         MD        NC     WI             MI      NY       CO   UT
+## 2         MD        NC     WI             SC      NY       CO   UT
+##   Mooresville
+## 1          NC
+## 2          NC
+##              sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, "State"]))
+## Westerly                                                                      RI
+## Weston                                                                        MO
+## West Chester                                                                  PA
+## Westminster                                                                   MA
+## Westfield                                                                     MA
+##   Newport New.Orleans Nellysford Newburgh New.York Newburyport
+## 1      RI          LA         VA       NY       NY          MA
+## 2      OR          LA         VA       NY       NY          MA
+##                 sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, "State"]))
+## North Woodstock                                                                  NH
+## Norfolk                                                                          VA
+## Northamtpon                                                                      MA
+## North Conway                                                                     NH
+##                  sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, "State"]))
+## Laurel                                                                            MD
+## Latrobe                                                                           PA
+## Lansdale                                                                          PA
+## Lafayette                                                                         IN
+## Lake Geneva                                                                       WI
+## Lake Havasu City                                                                  AZ
+## Lake Barrington                                                                   IL
+## Lahaina                                                                           HI
+## Lakeside                                                                          MT
+## Lancaster                                                                         PA
+##   Ashland Astoria Ashburn Asheville Aspen
+## 1      VA      OR      VA        NC    CO
+## 2      OR      OR      VA        NC    CO
+##             sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, "State"]))
+## Wolcott                                                                      CT
+## Woodinville                                                                  WA
+## Worcester                                                                    MA
+## Woodbridge                                                                   CT
+##           sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, "State"]))
+## Tampa                                                                      FL
+## Talkeetna                                                                  AK
+## Tampa Bay                                                                  FL
+## Tacoma                                                                     WA
+##   Sisters Silverton
+## 1      OR        OR
+## 2      OR        CO
+##              sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, "State"]))
+## Phoenix                                                                       AZ
+## Phoenixville                                                                  PA
+## Philadelphia                                                                  PA
+##           sapply(temp2Vec, function(x) unique(BrDF[BrDF$City == x, "State"]))
+## Cambridge                                                                  MA
+## Canton                                                                     MA
+## Carlsbad                                                                   CA
+##   Jackson Jacksonville Jacksonville.Beach
+## 1      WY           FL                 FL
+## 2      MS           FL                 FL
+```
+
+```r
+# No significant findings when compared to 3 char Match, stopping with this City Column cleaning.
 ```
 
 
 ```r
+# List any duplicate Rows based upon Name","City","State" columns.
+BrDF[duplicated(BrDF[,c("Name","City","State")]), ]
+```
+
+```
+##     Brew_ID                    Name       City State
+## 96       96      Blackrocks Brewery  Marquette    MI
+## 139     139  Summit Brewing Company Saint Paul    MN
+## 457     457 Lucette Brewing Company  Menomonie    WI
+```
+
+```r
+# Remove Dups, if needed
+#BrDF <- BrDF[!duplicated(BrDF[,c("Name","City","State")]), ]
+```
+
+
+```r
+## Look for duplicates in Brewry Name
 as.data.frame(table(BrDF$Name))[as.data.frame(table(BrDF$Name))$Freq > 1, ]
 ```
 
@@ -522,14 +746,7 @@ as.data.frame(table(BrDF$Name))[as.data.frame(table(BrDF$Name))$Freq > 1, ]
 ```
 
 ```r
-# Remove Dups if needed
-#BrDF <- BrDF[!duplicated(BrDF[,c("Name","City","State")]), ]
-```
-
-
-```r
-## Look for duplicates in Brewry Name
-## Match first 3
+## Match first 3, same logic that was done to find misspelled cities.
 uniTempVec <- unique(BrDF$Name)
 tempListVec <- character()
 for(i in 1:length(uniTempVec)){
