@@ -35,40 +35,75 @@ StatePlot
 ###First 6, Last 6
 Some of the observations are seen below.  The data gathered includes 
 
-```{r Q2, echo = TRUE}
+```{rQ2, echo = TRUE}
+#Q2 - Merge Beer and Breweries files by Brew_ID and prints the first/last 6 observations.
+beers <- read.csv("Beers.csv", header = TRUE)
+names(breweries) <- c("Brewery_id", "Name", "City", "State")
+master.file <- Reduce(function(beers, breweries) merge(beers, breweries, by="Brewery_id"), list(beers, breweries))
+names(master.file) <- c("Brewery_id", "Beer_name", "Beer_id", "ABV", "IBU", "Style", "Ounces", "Brewery_name", "City", "State")
 head(master.file,6)
 tail(master.file,6)
+write.csv(master.file, file = "masterfile.csv", row.names = FALSE)
 ```
 
 ###Number of NA's
 Some of the data was incomplete.  A summary of incomplete information is shown below.
 
 ```{r Q3, echo = TRUE}
+#Q3 - Summing the NA's for each column
 colSums(is.na(master.file))
 ```
 
 ###Median Alcohol Content & International Bitterness Unti (IBU) for each state
 The median amount of alcohol content and IBUs in each state is listed below. "Add Info about scatterplot"
-```{r Q4, echo = TRUE}
+```{rQ4, echo = TRUE}
+medianIBUABV<-aggregate.data.frame(master.file[, 4:5], list(master.file$State), median, na.rm=TRUE)
+states<-rep(medianIBUABV$Group.1,2)
+values<-c(medianIBUABV$ABV, medianIBUABV$IBU)
+type <-c(rep("ABV", 51), rep("IBU", 51))
+data<-data.frame(states, values)
 
+ggplot(data, aes(states, values)) +
+  geom_bar(stat = "identity", aes(fill = type), position = "dodge") +
+  xlab("States") +
+  ggtitle("Median State ABV & IBU") +
+  theme_bw()
+
+# This works but need to work on the scale of the ABV
 ```
 
 ###Maximum Alcoholic (ABV) and Most Bitter(IBU) Beer
 Based on the information gathered "Name of state" has the highest alcohol by volumne (ABV) and "Name of state" has the highest rating of International Bitterness Units (IBU) compared to the other states.
 ```{r Q5, echo = TRUE}
+MaxABV <- aggregate(ABV~State, data=master.file, max)
+MaxABV
+MaxABV[order(MaxABV$ABV),]
+MaxIBU <- aggregate(IBU~State, data=master.file, max)
+MaxIBU
+MaxIBU[order(MaxIBU$IBU),]
+
+```
+
+###Maximum Alcoholic (ABV) and Most Bitter(IBU) Beer
+Based on the information gathered, Colorado has the beer with the highest alcohol by volumne (ABV) and Oregon has the beer with the highest rating of International Bitterness Units (IBU) compared to the other states.
+```{rQ5, echo = TRUE}
 
 ```
 
 ###ABV Summary
 "Insert data about Min, Max, quartiles, etc."
-```{r Q6, echo = TRUE}
 
+```{rQ6, echo = TRUE}
+summary(BeersandBreweries$ABV)
 ```
 
 ###IBU and ABV relationship
-"Insert data and description of relationshipbetween IBU and ABV"
-```{r Q7, echo = TRUE}
+"Insert data and description of relationship between IBU and ABV"
+```{rQ7, echo = TRUE}
+plot(ABV, IBU, main="Relationship Between Beer Bitternes and its Alcoholic Content",
+   xlab="ABV: Alcohol By Volume", ylab="IBU: International Bitterness Units", pch=19) 
 
+ggplot(master.file, aes(x=ABV, y=IBU)) + geom_point()
 ```
 
 #Summary
