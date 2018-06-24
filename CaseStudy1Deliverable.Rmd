@@ -17,19 +17,19 @@ The purpose of this study is to help "Company Name" assess the market size and c
 The 558 breweries are spread among "# of States".  The most breweries are located in "state".  
 
 ```{r Q1, echo=TRUE}
-#Q2 - Merge Beer and Breweries files by Brew_ID (Assumes Beers.csv file has renamed Brewery_ID to Brew_ID) and prints the first/last 6 observations.
+#Q2 - Merge Beer and Breweries files by Brew_ID and count of Breweries by State
 beers <- read.csv("CleanedBeerData.csv", header = TRUE)
 breweries <- read.csv("CleanedBreweryData.csv", header = TRUE)
 master.file <- Reduce(function(beers, breweries) merge(beers, breweries, by="Brew_ID"), list(beers, breweries))
 write.csv(master.file, file = "masterfile.csv", row.names = FALSE)
 state.count <- as.data.frame(table(master.file$State))
 names(state.count) <- c("State", "Brewery_Count")
-state.count
+statesSort <- state.count[order(state.count$Brewery_Count),]
+statesSort
+#Add Graphic for Presentation Purposes
 library(ggplot2)
-states <- data.frame(master.file$Brew_ID, master.file$State)
-StatePlot <- ggplot(states, aes(x=master.file.State, color=master.file.State)) + geom_bar(stat="Count", width = 0.75) + labs(x = "State") + theme(legend.position = "none") + coord_flip()
-StatePlot
-
+StateCount <- ggplot(statesSort, aes(reorder(State, -Brewery_Count), Brewery_Count, color=State)) + geom_bar(stat = "Identity", width = .85) + labs(x = "State") + theme(legend.position = "none") + coord_flip()
+StateCount
 ```
 
 ###First 6, Last 6
