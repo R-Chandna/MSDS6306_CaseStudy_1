@@ -11,10 +11,11 @@ Data set of 2410 craft beers from US breweries and 558 US breweries obtained fro
 
 CODEBOOK FOR CRAFT BEERS (Beers.csv)
 	Beers.csv is UTF-8 encoded
-	Some beer names included year of production, removed from final analysis
+	Some beer names included year of production, these beers are assumed to be different from beers with the same name but no production year
 	Duplicates removed, the criteria for removal is that all variables except Beer_ID matched.
-	Additionally Ranger IPA (Current), Shift (1), Point Special (Current), Cherry Ale (1), Pleasure Town, Farmer Ted's Cream Ale, Dry Cider, Abbey's Single (2015- ), Triomphe, Bender, and Hipster Ale (Westbrook Brewing) were found to be duplicates of other beers but with Name field slightly different, these beers were also removed.
-	Hipster Ale (Two Roads Brewing) was renamed to Hipster Ale because Two Roads Brewing does not brew this beer
+		Additionally Ranger IPA (Current), Shift (1), Point Special (Current), Cherry Ale (1), Pleasure Town, Farmer Ted's Cream Ale, Dry Cider, Abbey's Single (2015- ), Triomphe, Bender, and Hipster Ale (Westbrook Brewing) were found to be duplicates of other beers but with Name field slightly different, these beers were also removed.
+		Hipster Ale (Two Roads Brewing) was renamed to Hipster Ale because Two Roads Brewing does not brew this beer
+	Cleaned file is output to "CleanedBeerData.csv"
 VARIABLE NAME 	- POSITION 	- VARIABLE 				- 
 Name		- 1		- Name of beer				
 Beer_ID		- 2 		- Beer's ID number
@@ -30,8 +31,29 @@ CODEBOOK FOR US BREWERIES (Breweries.csv)
 	Abbreviation of city names were expanded
 	Mispellings were corrected
 	Marquette was listed in MA, corrected to MI
+		"Against the Grain Brewery" changed to "Against The Grain Brewery"
+		"Grey Sail Brewing of Rhode Island" changed to "Grey Sail Brewing Company"
+		"Hops & Grains Brewing Company", "Name"] changed to "Hops & Grain Brewery"
+		"Goose Island Brewery Company", "Name"] changed to "Goose Island Brewing Company"
+		"Goodlife Brewing Co.", "Name"] changed "Good Life Brewing Company"
+		"Catawba Brewing Company", "Name"] changed to "Catawba Valley Brewing Company"
+		Angry Minnow", "Name"] <- "Angry Minnow Brewing Company"
+	Cleaned file is ouput to "CleanedBreweryData.csv"
 VARIABLE NAME 	- POSITION 	- VARIABLE
 Brew_ID		- 1		- Brewery's ID
 Name		- 2		- Name of brewery
 City		- 3		- City of brewery's location
 State		- 4		- State of brewery's locaion (in standard post office state abbreviations)
+
+CODEBOOK FOR MERGED BEERS and BREWERY DATA (masterfile.csv)
+VARIABLE NAME 	- POSITION 	- VARIABLE
+Brewwery_id	- 1		- Brewery's ID
+Beer_name	- 2		- Name of beer
+Beer_id		- 3 		- Beer's ID number
+ABV		- 4		- Alcohol by volume
+IBU		- 5		- International bitterness units
+Style	 	- 6		- Style of beer
+Ounces	 	- 7		- Volume of beer per bottle in ounces
+Brewery_name	- 8		- Name of brewery
+City		- 9		- City of brewery's location
+State		- 10		- State of brewery's locaion (in standard post office state abbreviations)
