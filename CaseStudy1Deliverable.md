@@ -6,17 +6,25 @@ output:
   html_document:
     keep_md: yes
 ---
+# Brewing Bros Brewery Location Report
 
-#Introduction
 
-The purpose of this study is to help "Brewing Bros" assess the market size and competition, to help them decide where the next "Brewing Bros" brewery should be built and what type of beer it should brew. The data used in this study was derived from "The National Beer and Wine Association" and includes 2410 US craft beers from 558 US breweries. (see Codebook for specific details)
+## Introduction
 
-#Tidy Data Process
-Data for this project came from two different sources, a dataset containing beers and information about them, such as the brewery they came from, their name, and their alcohol content (Beers.csv) and a dataset of breweries, with information including where they are located (Breweries.csv).  Both data sets had extensive errors and duplications that were correct or eliminated prior to beginning the research.
+The purpose of this study is to help "Brewing Bros"-- an international brewing company looking to expand to the United States-- assess market size and competition, and generally get a picture of the US brewing market, in order to determine their next brewery location and identify a featured beer. The data used in this study was obtained from "The National Beer and Wine Association" and includes 2410 US craft beers from 558 US breweries, with information on their name, location, beer type, acolohol content, and bitterness measurement (if available).
 
-The dataset was parsed for duplicate beers and breweries, which were deleted, and misspellings cities were corrected and any information that needed to be merged, was then merged. 
 
-#####Beers File
+```r
+#More information on the files, their cleanup, etc. can be found in the accompanying codebook.
+```
+
+## Data Background Information
+
+Data for this project, obtained from "The National Beer and Wine Association", originated as two different datasets of the most popular and profitable beers in the US: one focused on specific beers and information about them, such as the brewery they came from, their name, and their alcohol content (Beers.csv) and a dataset of breweries who manufactured the beer, with information including where they are located (Breweries.csv).  Both data sets had errors and duplications that were corrected or eliminated prior to beginning the research.
+
+The dataset was parsed for duplicate beers and breweries, which were deleted, and misspellings of cities were corrected. After the two separate datasets were cleaned of duplicates and erroneous data lines, the two datasets were merged to create one large dataset, for the purposes of our report. This larger dataset can be found attached as an addendum to the report, labeled "master.file". 
+
+##### Beers File Tidying
 
 ```r
 #Tidying of Beers:
@@ -120,7 +128,7 @@ colnames(UniqueBeers)[colnames(UniqueBeers)=="Brewery_id"] <- "Brew_ID"
 #Write Clean File
 write.csv(UniqueBeers, file="CleanedBeerData.csv", row.names = F)
 ```
-#####Brewery
+##### Breweries File Tidying
 
 ```r
 #Tidying Breweries.csv Section. Completed by Rajat and Andy
@@ -838,10 +846,10 @@ BrDF[BrDF$Name == "Angry Minnow", "Name"] <- "Angry Minnow Brewing Company"
 write.csv(BrDF, file = "CleanedBreweryData.csv", row.names = F)
 ```
 
-#Guiding Questions
+# What the data tells us about beer in the US
 
-###First 6, Last 6
-The files were merged and some of the observations are seen below.  The data gathered includes... 
+### First 6, Last 6
+The two separate files, beers and breweries, were merged into one large dataset. Some of the observations are seen below.  The data gathered includes... 
 
 
 ```r
@@ -906,7 +914,7 @@ tail(master.file,6)
 ## 2366     Anchorage    AK
 ```
 
-###Number of NA's
+### Number of NA's
 Once the data was cleaned and combined, there were still some missing data (or data showing as "NA" or "incomplete".  Not all breweries keep all of these statistics on all of their artisan beers, especially IBU. These missing data include 997 IBU ratings and 62 ABV marks, as seen below.
 
 
