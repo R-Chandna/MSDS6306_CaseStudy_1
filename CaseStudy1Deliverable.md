@@ -9,10 +9,12 @@ output:
 
 #Introduction
 
-The purpose of this study is to help "Company Name" assess the market size and competition on where the next "Company Name" brewery should be built and what type of beer it should brew. The data used in this study was derived from "Author of Data" and includes 2410 US craft beers from 558 US breweries. (see Codebook for specific details)
+The purpose of this study is to help "Brewing Bros" assess the market size and competition, to help them decide where the next "Brewing Bros" brewery should be built and what type of beer it should brew. The data used in this study was derived from "The National Beer and Wine Association" and includes 2410 US craft beers from 558 US breweries. (see Codebook for specific details)
 
 #Tidy Data Process
-Data for this project came from two different sources (Beers and Brewery).  Both data sets had extensive errors and duplications that were correct or eliminated prior to beginning the research.
+Data for this project came from two different sources, a dataset containing beers and information about them, such as the brewery they came from, their name, and their alcohol content (Beers.csv) and a dataset of breweries, with information including where they are located (Breweries.csv).  Both data sets had extensive errors and duplications that were correct or eliminated prior to beginning the research.
+
+The dataset was parsed for duplicate beers and breweries, which were deleted, and misspellings cities were corrected and any information that needed to be merged, was then merged. 
 
 #####Beers File
 
@@ -106,7 +108,8 @@ UniqueBeers <- subset(UniqueBeers, Name != "Abbey's Single (2015- )")
 UniqueBeers <- subset(UniqueBeers, Name != "Triomphe")
 UniqueBeers <- subset(UniqueBeers, Name != "Bender")
 UniqueBeers <- subset(UniqueBeers, Name != "Hipster Ale (Westbrook Brewing)")
-#rename Hipster Ale (Two Roads Brewing) to Hipster Ale, Two Roads Brewing does not brew Hipster Ale
+
+#rename Hipster Ale (Two Roads Brewing) to Hipster Ale; Two Roads Brewing does not brew Hipster Ale
 levels(UniqueBeers$Name)[levels(UniqueBeers$Name) == "Hipster Ale (Two Roads Brewing)"] = "Hipster Ale"
 ```
 
@@ -304,12 +307,12 @@ grep("^..[[:punct:][:blank:]]+",BrDF$City, value = T)
 BrDF$City <- gsub("^St[[:punct:][:blank:]]+","Saint ",BrDF$City)
 BrDF$City <- gsub("^Mt[[:punct:][:blank:]]+","Mount ",BrDF$City)
 
-# Thje purpose of below code is to catch cities that could be misspelled or are located in 
+# The purpose of below code is to catch cities that could be misspelled or are located in 
 # different state than what got entered by mistake.
 # The logic is that if City Name starts with same characters, and later gets off by few charcters
 # then the following code would catch such cities and list their states. If Thier States and Brewery Name
-# Also Matches then these could be misspellings. The same loop would be repeated to match cities that end with 
-# same characters as these could be misspelled in their starting characters.
+# Also Matches then these could be misspellings. The same loop would be repeated to match cities that end
+# with same characters as these could be misspelled in their starting characters.
 
 # Loop through every Unique city in City column, extract its first 3 characters,
 # append ^ in front of it so as to make RegEx for the search. Search for all other
@@ -730,7 +733,7 @@ BrDF[duplicated(BrDF[,c("Name","City","State")]), ]
 
 
 ```r
-## Look for duplicates in Brewry Name
+## Look for duplicates in Brewery Name
 as.data.frame(table(BrDF$Name))[as.data.frame(table(BrDF$Name))$Freq > 1, ]
 ```
 
@@ -904,7 +907,7 @@ tail(master.file,6)
 ```
 
 ###Number of NA's
-Once the data was cleaned and combined, there were still data that showed incomplete.  These include 997 IBU ratings and 62 ABV marks, as seen below.
+Once the data was cleaned and combined, there were still some missing data (or data showing as "NA" or "incomplete".  Not all breweries keep all of these statistics on all of their artisan beers, especially IBU. These missing data include 997 IBU ratings and 62 ABV marks, as seen below.
 
 
 ```r
@@ -919,8 +922,10 @@ colSums(is.na(master.file))
 ##            0            0            0            0            0
 ```
 
+##Beer and Brewery Quick Facts
+
 ###Breweries per state
-The 558 breweries are spread among all 50 states and includes District of Columbia for a total of 51.  The most breweries are located in in Colorado (259).  Other states with at least 100 breweries include: Pennsylvania (100), Oregon (114), Texas (130), Indiana (138), Michigan (162), and California (181).  
+The 558 breweries are spread among all 50 states and includes District of Columbia (for a total of 51).  The most breweries are located in in Colorado (259).  Other states with at least 100 breweries include: Pennsylvania (100), Oregon (114), Texas (130), Indiana (138), Michigan (162), and California (181).  
 
 ```r
 state.count <- as.data.frame(table(master.file$State))
@@ -993,91 +998,19 @@ StateCount
 
 ![](CaseStudy1Deliverable_files/figure-html/Q1-1.png)<!-- -->
 
-
-###Median Alcohol Content & International Bitterness Units (IBU) for each state
-The median amount of alcohol content and IBUs in each state is listed below. "Add Info about data"
-
-```rq4
-medianIBUABV<-aggregate.data.frame(master.file[, 4:5], list(master.file$State), median, na.rm=TRUE)
-states<-rep(medianIBUABV$Group.1,2)
-values<-c(medianIBUABV$ABV, medianIBUABV$IBU)
-type <-c(rep("ABV", 51), rep("IBU", 51))
-data<-data.frame(states, values)
-
-ggplot(data, aes(states, values)) +
-  geom_bar(stat = "identity", aes(fill = type), position = "dodge") +
-  xlab("States") +
-  ggtitle("Median State ABV & IBU") +
-  theme_bw()
-
-# This works but need to work on the scale of the ABV
-```
-
 ###Maximum Alcoholic (ABV) and Most Bitter(IBU) Beer
-Based on the information gathered "Name of state" has the highest alcohol by volumne (ABV) and "Name of state" has the highest rating of International Bitterness Units (IBU) compared to the other states.
+Based on the information gathered, Colorado has the highest alcohol by volumne (.128), followed closely by Kentucky (.125), and also Indiana (.120) and New York (.100). Delaware sits at the back of the pack with a max ABV of .055, followed by Arkansas (.061), Tennessee (.062), and New Hampshire (.065).
+
+Oregon has the highest rating of International Bitterness Units (IBU) compared to the other states (138), also followed closely by Virginia (135), and also followed by Massachussetts (130) and Ohio (126). The state with the lowest IBU is Arkansas (39), followed by Delaware (52), Louisiana (60), and Tennessee (61), putting Tennessee in the bottom 5 for Alcohol by volume as well as International Bitterness Units. 
+
+A full list can be seen below.
+
 
 ```r
+#Q4-7 done by Tori
 MaxABV <- aggregate(ABV~State, data=master.file, max)
+MaxABV <- MaxABV[order(MaxABV$ABV),]
 MaxABV
-```
-
-```
-##    State   ABV
-## 1     AK 0.068
-## 2     AL 0.093
-## 3     AR 0.061
-## 4     AZ 0.095
-## 5     CA 0.099
-## 6     CO 0.128
-## 7     CT 0.090
-## 8     DC 0.092
-## 9     DE 0.055
-## 10    FL 0.082
-## 11    GA 0.072
-## 12    HI 0.083
-## 13    IA 0.095
-## 14    ID 0.099
-## 15    IL 0.096
-## 16    IN 0.120
-## 17    KS 0.085
-## 18    KY 0.125
-## 19    LA 0.088
-## 20    MA 0.099
-## 21    MD 0.085
-## 22    ME 0.099
-## 23    MI 0.099
-## 24    MN 0.099
-## 25    MO 0.080
-## 26    MS 0.080
-## 27    MT 0.075
-## 28    NC 0.099
-## 29    ND 0.067
-## 30    NE 0.096
-## 31    NH 0.065
-## 32    NJ 0.099
-## 33    NM 0.080
-## 34    NV 0.099
-## 35    NY 0.100
-## 36    OH 0.099
-## 37    OK 0.085
-## 38    OR 0.088
-## 39    PA 0.099
-## 40    RI 0.086
-## 41    SC 0.097
-## 42    SD 0.069
-## 43    TN 0.062
-## 44    TX 0.099
-## 45    UT 0.090
-## 46    VA 0.088
-## 47    VT 0.096
-## 48    WA 0.084
-## 49    WI 0.099
-## 50    WV 0.067
-## 51    WY 0.072
-```
-
-```r
-MaxABV[order(MaxABV$ABV),]
 ```
 
 ```
@@ -1137,65 +1070,115 @@ MaxABV[order(MaxABV$ABV),]
 
 ```r
 MaxIBU <- aggregate(IBU~State, data=master.file, max)
+MaxIBU <- MaxIBU[order(MaxIBU$IBU),]
 MaxIBU
 ```
 
 ```
 ##    State IBU
-## 1     AK  71
-## 2     AL 103
 ## 3     AR  39
-## 4     AZ  99
-## 5     CA 115
-## 6     CO 104
-## 7     CT  85
-## 8     DC 115
 ## 9     DE  52
-## 10    FL  82
+## 19    LA  60
+## 42    TN  61
 ## 11    GA  65
+## 30    NE  65
+## 41    SC  65
+## 22    ME  70
+## 29    ND  70
+## 1     AK  71
+## 49    WV  71
 ## 12    HI  75
+## 40    RI  75
+## 50    WY  75
+## 18    KY  80
+## 26    MS  80
+## 27    MT  80
+## 48    WI  80
+## 10    FL  82
+## 31    NH  82
+## 44    UT  83
+## 47    WA  83
+## 7     CT  85
+## 25    MO  89
+## 21    MD  90
+## 34    NV  90
+## 28    NC  98
+## 4     AZ  99
 ## 13    IA  99
 ## 14    ID 100
 ## 15    IL 100
-## 16    IN 115
-## 17    KS 110
-## 18    KY  80
-## 19    LA  60
-## 20    MA 130
-## 21    MD  90
-## 22    ME  70
-## 23    MI 115
-## 24    MN 120
-## 25    MO  89
-## 26    MS  80
-## 27    MT  80
-## 28    NC  98
-## 29    ND  70
-## 30    NE  65
-## 31    NH  82
 ## 32    NJ 100
 ## 33    NM 100
-## 34    NV  90
-## 35    NY 111
-## 36    OH 126
 ## 37    OK 100
-## 38    OR 138
+## 2     AL 103
+## 6     CO 104
+## 17    KS 110
+## 35    NY 111
 ## 39    PA 113
-## 40    RI  75
-## 41    SC  65
-## 42    TN  61
+## 5     CA 115
+## 8     DC 115
+## 16    IN 115
+## 23    MI 115
 ## 43    TX 118
-## 44    UT  83
-## 45    VA 135
+## 24    MN 120
 ## 46    VT 120
-## 47    WA  83
-## 48    WI  80
-## 49    WV  71
-## 50    WY  75
+## 36    OH 126
+## 20    MA 130
+## 45    VA 135
+## 38    OR 138
 ```
 
 ```r
-MaxIBU[order(MaxIBU$IBU),]
+#Tori
+```
+
+###ABV Summary
+There were a wide range of beer ABV's in this dataset, from a (safe for pregnancy) .001 to a much higher .128, with the median at .057. Of the 2410 beers in the dataset, 62 of them were missing ABV information, which is marginally small. 
+
+
+```r
+summary(master.file$ABV)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+## 0.00100 0.05000 0.05700 0.05991 0.06800 0.12800      62
+```
+
+```r
+MaxABV <- aggregate(ABV~State, data=master.file, max)
+MaxABV <- MaxABV[order(MaxABV$ABV),]
+head(MaxABV)
+```
+
+```
+##    State   ABV
+## 9     DE 0.055
+## 3     AR 0.061
+## 43    TN 0.062
+## 31    NH 0.065
+## 29    ND 0.067
+## 50    WV 0.067
+```
+
+```r
+tail(MaxABV)
+```
+
+```
+##    State   ABV
+## 44    TX 0.099
+## 49    WI 0.099
+## 35    NY 0.100
+## 16    IN 0.120
+## 18    KY 0.125
+## 6     CO 0.128
+```
+
+```r
+MaxIBU <- aggregate(IBU~State, data=master.file, max)
+MaxIBU <- MaxIBU[order(MaxIBU$IBU),]
+head(MaxIBU)
 ```
 
 ```
@@ -1206,44 +1189,14 @@ MaxIBU[order(MaxIBU$IBU),]
 ## 42    TN  61
 ## 11    GA  65
 ## 30    NE  65
-## 41    SC  65
-## 22    ME  70
-## 29    ND  70
-## 1     AK  71
-## 49    WV  71
-## 12    HI  75
-## 40    RI  75
-## 50    WY  75
-## 18    KY  80
-## 26    MS  80
-## 27    MT  80
-## 48    WI  80
-## 10    FL  82
-## 31    NH  82
-## 44    UT  83
-## 47    WA  83
-## 7     CT  85
-## 25    MO  89
-## 21    MD  90
-## 34    NV  90
-## 28    NC  98
-## 4     AZ  99
-## 13    IA  99
-## 14    ID 100
-## 15    IL 100
-## 32    NJ 100
-## 33    NM 100
-## 37    OK 100
-## 2     AL 103
-## 6     CO 104
-## 17    KS 110
-## 35    NY 111
-## 39    PA 113
-## 5     CA 115
-## 8     DC 115
-## 16    IN 115
-## 23    MI 115
-## 43    TX 118
+```
+
+```r
+tail(MaxIBU)
+```
+
+```
+##    State IBU
 ## 24    MN 120
 ## 46    VT 120
 ## 36    OH 126
@@ -1252,31 +1205,222 @@ MaxIBU[order(MaxIBU$IBU),]
 ## 38    OR 138
 ```
 
-###Maximum Alcoholic (ABV) and Most Bitter(IBU) Beer
-Based on the information gathered, Colorado has the beer with the highest alcohol by volumne (ABV) and Oregon has the beer with the highest rating of International Bitterness Units (IBU) compared to the other states.
-
-```rq5
-
+```r
+#Tori
 ```
 
-###ABV Summary
-"Insert data about Min, Max, quartiles, etc."
+
+###Median Alcohol Content & International Bitterness Units (IBU) for each state
+While knowing which states have the highest possible ABV's or IBU's, it can also be helpful to see where their "median", or middle-of-the-pack values for each are.
+
+The median amount of alcohol content and IBUs in each state is listed below. 
 
 
-```rq6
-summary(BeersandBreweries$ABV)
+```r
+#Make a new dataframe with only median IBU and ABV values from each state
+medianIBUABV<-aggregate.data.frame(master.file[, 4:5], list(master.file$State), median, na.rm=TRUE)
+colnames(medianIBUABV)[1] <- "State"
+
+medianIBUABV
+```
+
+```
+##    State    ABV  IBU
+## 1     AK 0.0555 43.0
+## 2     AL 0.0600 43.0
+## 3     AR 0.0520 39.0
+## 4     AZ 0.0550 20.5
+## 5     CA 0.0580 42.0
+## 6     CO 0.0600 40.0
+## 7     CT 0.0600 29.0
+## 8     DC 0.0625 47.5
+## 9     DE 0.0550 52.0
+## 10    FL 0.0570 55.0
+## 11    GA 0.0550 55.0
+## 12    HI 0.0545 23.0
+## 13    IA 0.0555 26.0
+## 14    ID 0.0555 35.0
+## 15    IL 0.0580 30.0
+## 16    IN 0.0590 33.0
+## 17    KS 0.0500 20.0
+## 18    KY 0.0625 31.5
+## 19    LA 0.0520 31.5
+## 20    MA 0.0540 35.0
+## 21    MD 0.0590 29.0
+## 22    ME 0.0510 61.0
+## 23    MI 0.0620 35.0
+## 24    MN 0.0560 44.0
+## 25    MO 0.0520 24.0
+## 26    MS 0.0580 45.0
+## 27    MT 0.0550 40.0
+## 28    NC 0.0580 33.5
+## 29    ND 0.0500 32.0
+## 30    NE 0.0550 29.0
+## 31    NH 0.0550 48.5
+## 32    NJ 0.0460 34.5
+## 33    NM 0.0620 51.0
+## 34    NV 0.0600 41.0
+## 35    NY 0.0550 47.0
+## 36    OH 0.0580 40.0
+## 37    OK 0.0600 35.0
+## 38    OR 0.0580 54.0
+## 39    PA 0.0570 30.0
+## 40    RI 0.0550 24.0
+## 41    SC 0.0550 30.0
+## 42    SD 0.0600   NA
+## 43    TN 0.0570 37.0
+## 44    TX 0.0550 33.0
+## 45    UT 0.0400 34.0
+## 46    VA 0.0570 43.5
+## 47    VT 0.0550 30.0
+## 48    WA 0.0550 38.0
+## 49    WI 0.0520 20.0
+## 50    WV 0.0620 57.5
+## 51    WY 0.0500 21.0
+```
+
+The state with the highest median IBU is Maine, with 61. Following Maine in the top 5 is West Virginia (57.5). Next, tied at 55, are Florida and Georgia, followed by Oregon (54).
+
+The state with the lowest median is Hawaii, with a score of 23. Following Hawaii is Wyoming, with a score of 21, Airzona with 20.5, and Wisconsin and Kansas tied with 20.
+
+
+```r
+#print the top and bottom five states for each category of IBU and ABV
+medianIBU <- medianIBUABV[,c(1,3)]
+medianIBU <- medianIBU[order(medianIBU$IBU),]
+
+medianABV <- medianIBUABV[,c(1,2)]
+medianABV <- medianABV[order(medianABV$ABV),]
+
+#these are the states with the top 5 highest median IBU's
+head(medianIBU, 5)
+```
+
+```
+##    State  IBU
+## 17    KS 20.0
+## 49    WI 20.0
+## 4     AZ 20.5
+## 51    WY 21.0
+## 12    HI 23.0
+```
+
+```r
+#these are the states with the bottom 5 highest median IBU's
+tail(medianIBU, 6)
+```
+
+```
+##    State  IBU
+## 38    OR 54.0
+## 10    FL 55.0
+## 11    GA 55.0
+## 50    WV 57.5
+## 22    ME 61.0
+## 42    SD   NA
+```
+
+```r
+#these are the states with the top 5 highest median ABV's
+head(medianABV, 5)
+```
+
+```
+##    State   ABV
+## 45    UT 0.040
+## 32    NJ 0.046
+## 17    KS 0.050
+## 29    ND 0.050
+## 51    WY 0.050
+```
+
+```r
+#these are the states with the bottom 5 highest median ABV's
+tail(medianABV, 5)
+```
+
+```
+##    State    ABV
+## 23    MI 0.0620
+## 33    NM 0.0620
+## 50    WV 0.0620
+## 8     DC 0.0625
+## 18    KY 0.0625
+```
+
+Here is a visual snapshot of the differing median IBU and ABV values per state.
+
+
+```r
+#plot the following graphs side-by-side
+par(mfrow=c(1,2))
+
+#make a barplot for median IBU
+medianIBUplot <- ggplot(medianIBUABV, aes(reorder(State, -IBU), IBU, color=State)) + geom_bar(stat = "Identity", width = .85) + labs(x = "State") + theme(legend.position = "none") + coord_flip()
+medianIBUplot
+```
+
+```
+## Warning: Removed 1 rows containing missing values (position_stack).
+```
+
+![](CaseStudy1Deliverable_files/figure-html/Q4c-1.png)<!-- -->
+
+```r
+#make a barplot for median ABV
+medianABVplot <- ggplot(medianIBUABV, aes(reorder(State, -ABV), ABV, color=State)) + geom_bar(stat = "Identity", width = .85) + labs(x = "State") + theme(legend.position = "none") + coord_flip()
+medianABVplot
+```
+
+![](CaseStudy1Deliverable_files/figure-html/Q4c-2.png)<!-- -->
+
+```r
+# Tori
 ```
 
 ###IBU and ABV relationship
-"Insert data and description of relationship between IBU and ABV"
+While we had somewhat limited data on the IBU of the beers in our dataset, since it is not a required measurement for breweries to track for the purposes of quality control, we were able to construct a scatterplot to help us see if there is a relationship between the IBU and the ABV of a beer. 
 
-```rq7
-plot(ABV, IBU, main="Relationship Between Beer Bitternes and its Alcoholic Content",
-   xlab="ABV: Alcohol By Volume", ylab="IBU: International Bitterness Units", pch=19) 
+As you can see in the scatter plot below, it appears that there is a moderate correlation between the ABV and IBU of a beer between ABV of .05-.10.
 
-ggplot(master.file, aes(x=ABV, y=IBU)) + geom_point()
+```r
+ggplot(master.file, aes(x=ABV, y=IBU))+
+  geom_point(shape=19, alpha=(1/4)) +
+  theme_bw() +
+  theme() +
+  ggtitle("Relationship Between Beer Bitterness and its Alcoholic Content") +
+  theme(plot.title = element_text(hjust = 0.5, face="bold"))
 ```
 
+```
+## Warning: Removed 997 rows containing missing values (geom_point).
+```
+
+![](CaseStudy1Deliverable_files/figure-html/Q7-1.png)<!-- -->
+
+```r
+  theme(axis.title = element_text(face="bold"))
+```
+
+```
+## List of 1
+##  $ axis.title:List of 11
+##   ..$ family       : NULL
+##   ..$ face         : chr "bold"
+##   ..$ colour       : NULL
+##   ..$ size         : NULL
+##   ..$ hjust        : NULL
+##   ..$ vjust        : NULL
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : NULL
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi FALSE
+##   ..- attr(*, "class")= chr [1:2] "element_text" "element"
+##  - attr(*, "class")= chr [1:2] "theme" "gg"
+##  - attr(*, "complete")= logi FALSE
+##  - attr(*, "validate")= logi TRUE
+```
+
+
 #Summary
-
-
