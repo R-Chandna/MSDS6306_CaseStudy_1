@@ -27,7 +27,7 @@ The dataset was parsed for duplicate beers and breweries, which were deleted, an
 ```{r beer, eco=TRUE}
 #Tidying of Beers:
 #read in Beers data set with correct character formatting.
-Beers <- read.csv("Beers.csv", header=TRUE, fileEncoding = 'UTF-8', stringsAsFactors = F)
+Beers <- read.csv("./Data/Beers.csv", header=TRUE, fileEncoding = 'UTF-8', stringsAsFactors = F)
 ```
 
 ```{r}
@@ -36,9 +36,12 @@ UniqueBeers <- Beers[!duplicated(Beers[c(1,3,4,5,6,7)]),]
 ```
 
 ```{r}
-#Group beers by Brewery and Size
+
+#commented out, no longer needed after first run.
+#code is used to creat csv file for user to manally inspect.
 if(FALSE){
-  byBrewery <- split(UniqueBeers, list(UniqueBeers$Ounces, UniqueBeers$Brewery_id))
+#Group beers by Brewery and Size
+byBrewery <- split(UniqueBeers, list(UniqueBeers$Ounces, UniqueBeers$Brewery_id))
 
 # Match First 3 Chars
 for(i in 1:length(byBrewery)){
@@ -99,7 +102,8 @@ for(i in 1:length(byBrewery)){
 ```
 
 ```{r}
-#Removed beers with identical ABU, IBU, Brewery_id, Ounces but slight differences in name
+#Removed beers with identical ABU, IBU, Brewery_id, Ounces but slight differences in name. 
+#These were found by user through manual inspection of csv files obtained from codes above.
 UniqueBeers <- subset(UniqueBeers, Name != "Ranger IPA (Current)")
 UniqueBeers <- subset(UniqueBeers, Name != "Shift (1)")
 UniqueBeers <- subset(UniqueBeers, Name != "Point Special (Current)")
@@ -120,14 +124,14 @@ levels(UniqueBeers$Name)[levels(UniqueBeers$Name) == "Hipster Ale (Two Roads Bre
 colnames(UniqueBeers)[colnames(UniqueBeers)=="Brewery_id"] <- "Brew_ID"
 
 #Write Clean File
-write.csv(UniqueBeers, file="CleanedBeerData.csv", row.names = F)
+write.csv(UniqueBeers, file="./Data/CleanedBeerData.csv", row.names = F)
 
 ```
 ##### Breweries File Tidying
 ```{r}
 #Tidying Breweries.csv Section. Completed by Rajat and Andy
 #First inspect the State column.  We listed out the States and got the count for each.  If observation > 50, we investigated further by examining all the States with a count of 1 (DC, ND, SD, WV).  In this case, there was 51 States and confirmed the 51st was DC which is acceptable.  All abbreviations in State column is valid.
-breweries <- read.csv("Breweries.csv", header = TRUE)
+breweries <- read.csv("./Data/Breweries.csv", header = TRUE)
 str(breweries)
 summary(breweries)
 table(breweries$State)
@@ -142,7 +146,7 @@ unique(breweries[grep("^[Ss].*", breweries$City), "City"])
 
 ```{r}
 #Data Exploration Done, Cleaning begins   
-BrDF <- read.csv("Breweries.csv", header = T, stringsAsFactors = F)
+BrDF <- read.csv("./Data/Breweries.csv", header = T, stringsAsFactors = F)
 # First find and substitute any abbreviations symbols as "." with full form. Ex St. would be replaced
 # with Saint, Mt. would be replaced with Mount etc
 grep("[[:punct:]]",BrDF$City, value = T)
@@ -304,7 +308,7 @@ BrDF[BrDF$Name == "Catawba Brewing Company", "Name"] <- "Catawba Valley Brewing 
 BrDF[BrDF$Name == "Angry Minnow", "Name"] <- "Angry Minnow Brewing Company"
 
 #Write Clean File
-write.csv(BrDF, file = "CleanedBreweryData.csv", row.names = F)
+write.csv(BrDF, file = "./Data/CleanedBreweryData.csv", row.names = F)
 ```
 
 ### What information do we have to work with?
@@ -312,11 +316,11 @@ The two separate files, beers and breweries, were merged into one large dataset.
 
 ```{r Q2, echo=TRUE}
 #Q2 - Merge Beer and Breweries files by Brew_ID (Assumes Beers.csv file has renamed Brewery_ID to Brew_ID) and prints the first/last 6 observations.
-beers <- read.csv("CleanedBeerData.csv", header = TRUE)
-breweries <- read.csv("CleanedBreweryData.csv", header = TRUE)
+beers <- read.csv("./Data/CleanedBeerData.csv", header = TRUE)
+breweries <- read.csv("./Data/CleanedBreweryData.csv", header = TRUE)
 master.file <- Reduce(function(beers, breweries) merge(beers, breweries, by="Brew_ID"), list(beers, breweries))
 names(master.file) <- c("Brewery_id", "Beer_name", "Beer_id", "ABV", "IBU", "Style", "Ounces", "Brewery_name", "City", "State")
-write.csv(master.file, file = "masterfile.csv", row.names = FALSE)
+write.csv(master.file, file = "./Data/masterfile.csv", row.names = FALSE)
 head(master.file,6)
 tail(master.file,6)
 ```
