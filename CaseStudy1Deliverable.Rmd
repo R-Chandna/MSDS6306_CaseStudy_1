@@ -14,12 +14,12 @@ output:
 The purpose of this study is to help "Brewing Bros"-- an international brewing company looking to expand to the United States-- assess market size and competition, and generally get a picture of the US brewing market, in order to determine their next brewery location and identify a featured beer. The data used in this study was obtained from "The National Beer and Wine Association" and includes 2410 US craft beers from 558 US breweries, with information on their name, location, beer type, acolohol content, and bitterness measurement (if available).
 
 ```{r, echo=TRUE}
-#More information on the files, their cleanup, etc. can be found in the accompanying codebook.
+#More information on the files, their cleanup, etc. can be found in the accompanying codebook, contained in the README file, and also below, in code chunks.
 ```
 
 ## Data Background Information
 
-Data for this project, obtained from The National Beer and Wine Association,which works with the largest beer distributors in the US, originated as two different datasets of the most popular and profitable beers (from data collected internally through their distribution centers as well as through distribution partners) in the US: one focused on specific beers and information about them, such as the brewery they came from, their name, and their alcohol content (Beers.csv) and a dataset of breweries who manufactured the beer, with information including where they are located (Breweries.csv). Both data sets had errors and duplications that were corrected or eliminated prior to beginning the research.
+Data for this project, obtained from The National Beer and Wine Association, which works with the largest beer distributors in the US, originated as two different datasets of the most popular and profitable beers (from data collected internally through their distribution centers as well as through distribution partners) in the US: one focused on specific beers and information about them, such as the brewery they came from, their name, and their alcohol content (Beers.csv) and a dataset of breweries who manufactured the beer, with information including where they are located (Breweries.csv). Both data sets had errors and duplications that were corrected or eliminated prior to beginning the research.
 
 The dataset was parsed for duplicate beers and breweries, which were deleted, and misspellings of cities were corrected. After the two separate datasets were cleaned of duplicates and erroneous data lines, the two datasets were merged to create one large dataset, for the purposes of our report. This larger dataset can be found attached as an addendum to the report, labeled "master.file". 
 
@@ -332,21 +332,21 @@ tail(master.file,6)
 ### Are there any obstacles with the data we're using?
 Once the data was cleaned and combined, there were still some missing data (or data showing as "NA" or "incomplete".  Not all breweries keep all of these statistics on all of their artisan beers, especially IBU. These missing data include 997 IBU ratings and 62 ABV marks, as seen below. 
 
-Only about 2.4% of the beers we have are missing information on alcohol by volume, although roughly 40% of the beers are missing information about their bitterness, using the International Bitterness Unit Scale. This still leaves us with a majority of our beers with complete information.
+Only about 2.6% of the beers we have are missing information on alcohol by volume, although roughly 40% of the beers are missing information about their bitterness, using the International Bitterness Unit Scale. This still leaves us with a majority of our beers with complete information.
 
 ```{r Q3, echo = TRUE}
 #Q3 - Summing the NA's for each column
 colSums(is.na(master.file))
 
-62/2410
+62/2366
 
-997/2410
+997/2366
 ```
 
 ## Beer and Brewery Quick Facts
 
 #### How many breweries are there per state? Are there any states that stand out as having too many or too few breweries?
-The 558 breweries in this dataset are spread among all 50 states and includes District of Columbia (for a total of 51).  The most breweries are located in in Colorado (47), which has a booming beer market.  Other states with at least 25 breweries (all well-performing markets) include: California  (39), Michigan (33), Oregon (29), Texas (28), and Pennsylvania (25).
+The 558 breweries in this dataset are spread among all 50 states and includes District of Columbia (for a total of 51). The most breweries are located in in Colorado (47), which has a booming beer market.  Other states with at least 25 breweries (all well-performing markets) include: California  (39), Michigan (33), Oregon (29), Texas (28), and Pennsylvania (25).
 
 The states with the fewest breweries in the US also tend to be the smallest or least populated, such as Washington, D.C. (1), North Dakota (1) , South Dakota (1), West Virginia (1), Arkansas (2), Delaware (2), Mississippi (2), and Nevada (2).
 
@@ -363,7 +363,7 @@ StateCount <- ggplot(statesSort, aes(reorder(State, -Number_of_Breweries), Numbe
 StateCount
 ```
 
-### What is the most alcoholic (ABV) and most bitter(IBU) beer in the US?
+### What is the most alcoholic (ABV) and most bitter (IBU) beer in the US?
 Based on the information gathered, Colorado has the beer with the highest alcohol by volume (.128), followed closely by Kentucky (.125), and also Indiana (.120) and New York (.100). Delaware sits at the back of the pack with a max ABV of .055, followed by Arkansas (.061), Tennessee (.062), and New Hampshire (.065).
 
 Oregon has the highest rating of International Bitterness Units (IBU) compared to the other states (138), also followed closely by Virginia (135), and also followed by Massachussetts (130) and Ohio (126). The state with the lowest IBU is Arkansas (39), followed by Delaware (52), Louisiana (60), and Tennessee (61), putting Tennessee in the bottom 5 for Alcohol by volume as well as International Bitterness Units. 
@@ -386,19 +386,13 @@ MaxIBU
 ```
 
 ### What does the US climate look like concerning alcohol by volume?
-There were a somewhat wide range of beer ABV's in this dataset, from a .055 (Delaware) to a much higher .128 (Colorado). Other states with low maximum ABVs are Arkansas (.061), Tennessee (.062), New Hampshire (.065), and North Dakota (.067). Other states with high maximum ABVs are Kentucky (.125), Indiana (.120), and New York (.100), with the next thirteen states with their maximum alcohol by volume at .099.  The median ABV in this dataset is .09 and the third quartile is .099, which indicates a sizable portion of the beers on the market contain roughly 10% or so alcohol by volume. 
+There were a somewhat wide range of ABV's in this dataset, from a .001 beer from California billed as a low-alcohol beer, to a much higher .128 Belgian-Style Quadruple beer from Colorado. The median ABV of the entire dataset is a .057 and the mean ABV is .06. The first and third quartiles, or the medians between the extremes and the mean, are .05 and .068 espectively, which means that a large portion of the beers in this dataset are between 5-6% alcohol by volume.
 
-Of the 2410 beers in the dataset, 62 of them were missing ABV information, which is marginally small (roughly 2.5%). 
+Of the 2366 beers in the dataset, 62 of them were missing ABV information, which is marginally small (roughly 2.6%). 
 
 ```{r Q6, echo = TRUE}
+
 summary(master.file$ABV)
-
-MaxABV <- aggregate(ABV~State, data=master.file, max)
-MaxABV <- MaxABV[order(MaxABV$ABV),]
-head(MaxABV)
-tail(MaxABV)
-
-summary(MaxABV)
 
 ```
 
@@ -418,30 +412,36 @@ medianIBUABV
 
 The state with the highest median IBU is Maine, with 61. Following Maine in the top 5 is West Virginia (57.5). Next, tied at 55, are Florida and Georgia, followed by Oregon (54).
 
-The states with the lowest median are Wisconsin and Kansas, tied at 20. Following Wisconsin and Kansas is Arizona (20.5), Wyoming (21), and Hawaii (23). You can see these in a list below.
+The states with the lowest median IBU are Wisconsin and Kansas, tied at 20. Following Wisconsin and Kansas is Arizona (20.5), Wyoming (21), and Hawaii (23). You can see these in a list below.
 
 ```{r, Q4b, echo=TRUE}
-#print the top and bottom five states for each category of IBU and ABV
+#print the top and bottom five states for each category of IBU
 medianIBU <- medianIBUABV[,c(1,3)]
 medianIBU <- medianIBU[order(medianIBU$IBU),]
-
-medianABV <- medianIBUABV[,c(1,2)]
-medianABV <- medianABV[order(medianABV$ABV),]
 
 #these are the states with the top 5 highest median IBU's
 head(medianIBU, 5)
 #these are the states with the bottom 5 highest median IBU's
 tail(medianIBU, 6)
 
+```
+The states with the highest median ABV are Kentucky and Washington, D.C., with .063. Following Kentucky and DC in the top 5 medians per state are West Virginia, New Mexico, and Michigan, all tied (.062). 
+
+The state with the lowest median ABV is Utah, with .04. Following Utah is New Jersey (.046), then Kansas, North Dakota, and Wyoming all tied with .05. You can see these in a list below.
+
+```{r, Q4c, echo=TRUE}
+#print the top and bottom five states for each category of ABV
+medianABV <- medianIBUABV[,c(1,2)]
+medianABV <- medianABV[order(medianABV$ABV),]
+
 #these are the states with the top 5 highest median ABV's
 head(medianABV, 5)
 #these are the states with the bottom 5 highest median ABV's
 tail(medianABV, 5)
 ```
-
 Here is a visual snapshot of the differing median IBU and ABV values per state. These bar plots are ordered so that the largest values (of either ABV or IBU) are on the bottom, with the smallest on the top, to make viewing 50 state's worth of values simpler. Take note of the differing state's orders.
 
-```{r Q4c, echo = TRUE}
+```{r Q4d, echo = TRUE}
 #plot the following graphs side-by-side
 par(mfrow=c(1,2))
 

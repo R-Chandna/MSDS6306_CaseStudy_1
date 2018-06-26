@@ -40,7 +40,7 @@
 	* Summary and Q&A: Jodi
 
 ## Project Details
-* The "story" created to go with this project was that TAJAR, Inc., our imaginary data company, was tasked with helping Brewing Bros, an international brewing company looking to expand to the US, to learn more about the US beer brewing market, about the beers that are popular, and get suggestions on where to set up their next brewery and suggestions on beers to feature in that brewery. 
+* The "story" created to go with this project was that TAJAR, Inc., our (imaginary) data company, was tasked with helping Brewing Bros, an international brewing company looking to expand to the US, to learn more about the US beer brewing market, about the beers that are popular, and get suggestions on where to set up their next brewery as well as suggestions on beers to feature in that brewery. 
 * We pretended that the (US) National Beer and Wine Association works closely with the largest beer distributors and had gathered data on their most popular beers (and the breweries they came from) and breweries, which they then let us use.
 * After the data cleaning process, detailed in the codebook (and also illustrated in the echoed code chunks in the deliverable), we ran a few analyses to help us understand some basic statistics about the US beer market.
 * Our "report" for Brewing Bros details what we learned, and our accompanying powerpoint corresponds to our report.
