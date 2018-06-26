@@ -342,18 +342,20 @@ colSums(is.na(master.file))
 ## Beer and Brewery Quick Facts
 
 #### How many breweries are there per state? Are there any states that stand out as having too many or too few breweries?
-The 558 breweries in this dataset are spread among all 50 states and includes District of Columbia (for a total of 51).  The most breweries are located in in Colorado (259), which has a booming beer market.  Other states with at least 100 breweries (and well-performing markets) include: Pennsylvania (100), Oregon (114), Texas (130), Indiana (138), Michigan (162), and California (181).
+The 558 breweries in this dataset are spread among all 50 states and includes District of Columbia (for a total of 51).  The most breweries are located in in Colorado (47), which has a booming beer market.  Other states with at least 25 breweries (all well-performing markets) include: California  (39), Michigan (33), Oregon (29), Texas (28), and Pennsylvania (25).
 
-The states with the fewest breweries in the US also tend to be the smallest or least populated, such as Delaware (2), West Virginia (2), North Dakota (3), South Dakota (7), Washington, D.C. (8), Hew Hampshire (8), and New Jersey (8). However, a few others stand out, as they are larger or more populated, such as Arkansas (5), Tennessee (6), Alabama (10), Missouri (11), South Carolina (14), and Louisiana (19).
+The states with the fewest breweries in the US also tend to be the smallest or least populated, such as Washington, D.C. (1), North Dakota (1) , South Dakota (1), West Virginia (1), Arkansas (2), Delaware (2), Mississippi (2), and Nevada (2).
 
 ```{r Q1, echo=TRUE}
-state.count <- as.data.frame(table(master.file$State))
-names(state.count) <- c("State", "Brewery_Count")
-statesSort <- state.count[order(state.count$Brewery_Count),]
+BrewState <-data.frame(master.file$Brewery_id, master.file$State)
+UniqueBrewState <- unique(BrewState)
+StatesChart <- as.data.frame(table(UniqueBrewState$master.file.State))
+names(StatesChart) <- c("State", "Number_of_Breweries")
+statesSort <- StatesChart[order(StatesChart$`Number_of_Breweries`),]
 statesSort
 #Add Graphic for Presentation Purposes
 library(ggplot2)
-StateCount <- ggplot(statesSort, aes(reorder(State, -Brewery_Count), Brewery_Count, color=State)) + geom_bar(stat = "Identity", width = .85) + labs(x = "State") + theme(legend.position = "none") + coord_flip()
+StateCount <- ggplot(statesSort, aes(reorder(State, -Number_of_Breweries), Number_of_Breweries, color=State)) + geom_bar(stat = "Identity", width = .85) + labs(x = "State") + theme(legend.position = "none") + coord_flip()
 StateCount
 ```
 

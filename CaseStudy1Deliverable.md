@@ -952,77 +952,79 @@ colSums(is.na(master.file))
 ## Beer and Brewery Quick Facts
 
 #### How many breweries are there per state? Are there any states that stand out as having too many or too few breweries?
-The 558 breweries in this dataset are spread among all 50 states and includes District of Columbia (for a total of 51).  The most breweries are located in in Colorado (259), which has a booming beer market.  Other states with at least 100 breweries (and well-performing markets) include: Pennsylvania (100), Oregon (114), Texas (130), Indiana (138), Michigan (162), and California (181).
+The 558 breweries in this dataset are spread among all 50 states and includes District of Columbia (for a total of 51).  The most breweries are located in in Colorado (47), which has a booming beer market.  Other states with at least 25 breweries (all well-performing markets) include: California  (39), Michigan (33), Oregon (29), Texas (28), and Pennsylvania (25).
 
-The states with the fewest breweries in the US also tend to be the smallest or least populated, such as Delaware (2), West Virginia (2), North Dakota (3), South Dakota (7), Washington, D.C. (8), Hew Hampshire (8), and New Jersey (8). However, a few others stand out, as they are larger or more populated, such as Arkansas (5), Tennessee (6), Alabama (10), Missouri (11), South Carolina (14), and Louisiana (19).
+The states with the fewest breweries in the US also tend to be the smallest or least populated, such as Washington, D.C. (1), North Dakota (1) , South Dakota (1), West Virginia (1), Arkansas (2), Delaware (2), Mississippi (2), and Nevada (2).
 
 
 ```r
-state.count <- as.data.frame(table(master.file$State))
-names(state.count) <- c("State", "Brewery_Count")
-statesSort <- state.count[order(state.count$Brewery_Count),]
+BrewState <-data.frame(master.file$Brewery_id, master.file$State)
+UniqueBrewState <- unique(BrewState)
+StatesChart <- as.data.frame(table(UniqueBrewState$master.file.State))
+names(StatesChart) <- c("State", "Number_of_Breweries")
+statesSort <- StatesChart[order(StatesChart$`Number_of_Breweries`),]
 statesSort
 ```
 
 ```
-##    State Brewery_Count
-## 9     DE             2
-## 50    WV             2
-## 29    ND             3
-## 3     AR             5
-## 43    TN             6
-## 42    SD             7
-## 8     DC             8
-## 31    NH             8
-## 32    NJ             8
-## 2     AL            10
-## 26    MS            11
-## 34    NV            11
-## 33    NM            14
-## 41    SC            14
-## 51    WY            15
-## 11    GA            16
-## 19    LA            19
-## 37    OK            19
-## 21    MD            20
-## 18    KY            21
-## 17    KS            23
-## 30    NE            23
-## 1     AK            24
-## 45    UT            25
-## 12    HI            26
-## 47    VT            26
-## 7     CT            27
-## 22    ME            27
-## 40    RI            27
-## 14    ID            28
-## 13    IA            30
-## 46    VA            39
-## 27    MT            40
-## 25    MO            42
-## 4     AZ            47
-## 36    OH            49
-## 24    MN            54
-## 28    NC            56
-## 10    FL            58
-## 48    WA            67
-## 35    NY            73
-## 20    MA            79
-## 49    WI            84
-## 15    IL            89
-## 39    PA           100
-## 38    OR           114
-## 44    TX           130
-## 16    IN           138
-## 23    MI           162
-## 5     CA           181
-## 6     CO           259
+##    State Number_of_Breweries
+## 8     DC                   1
+## 29    ND                   1
+## 42    SD                   1
+## 50    WV                   1
+## 3     AR                   2
+## 9     DE                   2
+## 26    MS                   2
+## 34    NV                   2
+## 2     AL                   3
+## 17    KS                   3
+## 31    NH                   3
+## 32    NJ                   3
+## 43    TN                   3
+## 12    HI                   4
+## 18    KY                   4
+## 33    NM                   4
+## 41    SC                   4
+## 45    UT                   4
+## 51    WY                   4
+## 13    IA                   5
+## 14    ID                   5
+## 19    LA                   5
+## 30    NE                   5
+## 40    RI                   5
+## 37    OK                   6
+## 1     AK                   7
+## 11    GA                   7
+## 21    MD                   7
+## 7     CT                   8
+## 22    ME                   9
+## 25    MO                   9
+## 27    MT                   9
+## 47    VT                  10
+## 4     AZ                  11
+## 24    MN                  12
+## 10    FL                  15
+## 36    OH                  15
+## 35    NY                  16
+## 46    VA                  16
+## 15    IL                  18
+## 28    NC                  19
+## 49    WI                  20
+## 16    IN                  22
+## 20    MA                  22
+## 48    WA                  23
+## 39    PA                  25
+## 44    TX                  28
+## 38    OR                  29
+## 23    MI                  33
+## 5     CA                  39
+## 6     CO                  47
 ```
 
 ```r
 #Add Graphic for Presentation Purposes
 library(ggplot2)
-StateCount <- ggplot(statesSort, aes(reorder(State, -Brewery_Count), Brewery_Count, color=State)) + geom_bar(stat = "Identity", width = .85) + labs(x = "State") + theme(legend.position = "none") + coord_flip()
+StateCount <- ggplot(statesSort, aes(reorder(State, -Number_of_Breweries), Number_of_Breweries, color=State)) + geom_bar(stat = "Identity", width = .85) + labs(x = "State") + theme(legend.position = "none") + coord_flip()
 StateCount
 ```
 
