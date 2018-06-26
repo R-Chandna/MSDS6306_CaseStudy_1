@@ -1,7 +1,7 @@
 ---
 title: "CaseStudy1Deliverable"
 author: "Rajat Chandna, Andy Ho, An Nguyen, Jodi Pafford, and Tori Wheelis"
-date: "June 17, 2018"
+date: "June 26, 2018"
 output: 
   html_document:
     keep_md: yes
@@ -472,6 +472,12 @@ ggplot(master.file, aes(x=ABV, y=IBU))+
 
 
 # Summary
-Depending on Brewing Bros' desired approach, it is clear that the US beer market is booming and Brewing Bros will find a good home for their newest brewery. Based on the available data, it is the opinion of TAJAR, Inc. that Brewing Bros would make a sound investment setting up a brewery in a larger, more populous state with a small number of breweries that have a clear need for more artisan beers or more alcohol by volume beers, especially if those states are near states with very large beer markets.
+The US beer market is booming, and Brewing Bros will find a good home for their newest brewery here. Based on the available data, TAJAR, Inc. has a three-part recommendation.  
 
-Our preliminary research has identified Tennessee and Arkansas as two prime possible locations, with Missouri and South Carolina as other possible sites. Arkansas and Tennessee are known for low property values and taxes, and Arkansas in particular is known for its proximity to large beer markets, such as Texas and Colorado, and small but robust beer market. Arkansas has few breweries and a lot of potential. With few beers being produced that are both tracked by International Bitterness Units and that also score high on IBUs, in addition to a lower median alcohol by volume content, Arkansas demonstrates a clear market need for a standout IPA or Stout, both bitter beers, and another, well-respected brewery to put down roots.
+Location: Our recommendation is one of four states: Tennessee, Arkansas, Kansas or Arizona. Brewing Bros would make a sound investment choice by setting up a brewery in one of these larger, more populous state with a small number of breweries. There is a clear need for more artisan beers, especially if those states are near states with very large beer markets.
+
+ABV: Our second recommendation is ABV percentage. Our preliminary research has identified a gap in production of stronger ABV beers in states such as Tennessee and Arkansas. These states tap out with a max ABV of 6.2% and 6.1%, respectively. It is TAJAR's recommendation that the beer brewed by Brewing Bros is between 6.5% and 7.5%, allowing you to capitalize on this untapped area of the market but still be in the range of others in the market area.
+
+IBU: Finally, we would like to recommend an IBU target value for Brewing Bros. With the median IBU per state ranging from 20 to 61, there is some clear room for growth in some of our target states. Arkansas and Tennessee have median IBUs of 39 and 37. The target range we recommend is 50-60 which could produce a fantastic high IBU Stout or low Pale Ale.  Either would be a fantastic choice.
+
+While Kansas and Arizona are two great options, Arkansas and Tennessee are the top two choices for Brewing Bros' next brewery location. Both Arkansas and Tennessee are known for low property values and taxes. Arkansas in particular is known for its proximity to large beer markets, such as Texas and Colorado, and small but robust beer market. Arkansas has few breweries and a lot of potential. Arkansas demonstrates a clear market need for a standout Pale Ale or Stout. Brewing Bros could easily fill the gap in the industry found in either Tennessee or Arkansas.
