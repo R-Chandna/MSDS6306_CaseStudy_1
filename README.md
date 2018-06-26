@@ -22,7 +22,8 @@
 		* Beers: An, Jodi, some help from Tori
 		* Breweries: Rajat and Andy
 	* R-code for questions:
-		* 1-3: Andy
+		* 1-2: Andy
+		* 3  : Jodi and Andy
 		* 4-7: Tori
 	* Presentation:
 		* Created by Jodi with help from Tori
@@ -32,7 +33,8 @@
 		* Beers: An and Jodi
 		* Breweries: Rajat and Andy
 	* Answers to Questions:
-		* 1-3: Andy
+		* 1-2: Andy
+		* 3  : Jodi
 		* 4-7: Tori
 	* Closing and Q&A: Jodi
 
