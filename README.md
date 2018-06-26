@@ -93,7 +93,7 @@
 
 |VARIABLE NAME|POSITION|VARIABLE|
 |:-|:-:|-:|
-|Brewwery_id|1|Brewery's ID|
+|Brewery_id|1|Brewery's ID|
 |Beer_name|2|Name of beer|
 |Beer_id|3|Beer's ID number|
 |ABV|4|Alcohol by volume|
