@@ -11,7 +11,7 @@ output:
 
 ## Introduction
 
-The purpose of this study is to help "Brewing Bros"-- an international brewing company looking to expand to the United States-- assess market size and competition, and generally get a picture of the US brewing market, in order to determine their next brewery location and identify a featured beer. The data used in this study was obtained from "The National Beer and Wine Association" and includes 2410 US craft beers from 558 US breweries, with information on their name, location, beer type, acolohol content, and bitterness measurement (if available).
+The purpose of this study is to help "Brewing Bros"-- an international brewing company looking to expand to the United States-- assess market size and competition, and generally get a picture of the US brewing market, in order to determine their next brewery location and identify a featured beer. The data used in this study was obtained from "The National Beer and Wine Association" and includes an initial 2410 US craft beers from 558 US breweries, with information on their name, location, beer type, acolohol content, and bitterness measurement (if available).
 
 ```{r, echo=TRUE}
 #More information on the files, their cleanup, etc. can be found in the accompanying codebook, contained in the README file, and also below, in code chunks.
@@ -131,6 +131,7 @@ UniqueBeers$Style[UniqueBeers$Style == ""] <- NA
 write.csv(UniqueBeers, file="./Data/CleanedBeerData.csv", row.names = F)
 
 ```
+
 ##### Breweries File Tidying
 ```{r}
 #Tidying Breweries.csv Section. Completed by Rajat and Andy
@@ -364,19 +365,128 @@ StateCount
 ```
 
 ### What is the most alcoholic (ABV) and most bitter (IBU) beer in the US?
-Based on the information gathered, Colorado has the beer with the highest alcohol by volume (.128), followed closely by Kentucky (.125), and also Indiana (.120) and New York (.100). Delaware sits at the back of the pack with a max ABV of .055, followed by Arkansas (.061), Tennessee (.062), and New Hampshire (.065).
 
-Oregon has the highest rating of International Bitterness Units (IBU) compared to the other states (138), also followed closely by Virginia (135), and also followed by Massachussetts (130) and Ohio (126). The state with the lowest IBU is Arkansas (39), followed by Delaware (52), Louisiana (60), and Tennessee (61), putting Tennessee in the bottom 5 for Alcohol by volume as well as International Bitterness Units. 
+#### Highest ABV Beer and the top and bottom ABV beers in the US:
+Based on the information gathered, Colorado has the beer with the highest alcohol by volume (.128), a Belgian Quadruple Ale from Upslope Brewing Company in Boulder Colorado. The Lee Hill Series Belgian Ale is followed closely by London Balling, an English Barleywine from Against the Grain Brewery in Lousiville, Kentucky (.125), and also Csar, a Russian Imperial Stout from Tin Man Brewing Company in Evansville, Indiana (.120), another Lee Hill Series Manhattan Style Rye Ale also from Upslope in Boulder, Colorado (.104), and the 4Beans Baltic Porter from Sixpoint Craft Ales in Brooklyn, New York (.100). 
 
-A full list can be seen below.
+The lowest alcohol by volume beer is the Scotty K NA from Uncommon Breweries, in Santa Cruz, California, and is billed as a low-alcohol beer. The next lowest alcohol-by-volume beers are the Totally Radler from Hopworks Urban Brewery in Portland, Oregon (.027), the Bikini Beer, an American IPA from Evil Twin Brewery in Brooklyn, New York (also .027), the Summer Brew, an American Pilsner from Wodstock Inn, Station, & Brewery in North Woodstock, New Hampshire (.028), and the Rad, labeled as a Fruit/Vegetable beer, from Sixpoint Craft Ales in Brooklyn, New York.
 
-Note: A large portion (roughly 40%) of the beers are missing IBU information.
+It is interesting to note that 6 of the 20 lowest ABV beers are Ales (of varying types), with 4 Light Lagers and two Weissbiers, while in the top 20 of the highest ABV beers, there are 7 stouts (of varying types, mostly American Double/Imperial Stouts) and 3 Barleywines.
 
-```{r Q5, echo = TRUE}
+A list of the top and bottom 20 beers can be seen below. Note that the top 20 are printed in reverse order, as they are reported in ascending size.
+
+#### The beer with the highest ABV
+```{r Q5a, echo = TRUE}
 #Q4-7 done by Tori
+
+#print the max ABV beer (and its information) in the whole dataset
+master.file[which.max(master.file$ABV),]
+
+#Tori
+```
+
+#### The top 20 highest ABV beers (in reverse order)
+```{r Q5b, echo = TRUE}
+#Q4-7 done by Tori
+
+#order all beers by ABV in ascending order, then ignrore NA's only in the ABV column
+ABVall <- master.file[order(master.file$ABV),]
+ABVall <- ABVall[!is.na(ABVall$ABV),]
+
+#print the top 20 (reverse order)
+tail(ABVall, 20)
+
+#Tori
+```
+
+#### The bottom 20 lowest ABV beers
+```{r Q5c, echo = TRUE}
+#Q4-7 done by Tori
+
+#order all beers by ABV in ascending order, then ignrore NA's only in the ABV column
+ABVall <- master.file[order(master.file$ABV),]
+ABVall <- ABVall[!is.na(ABVall$ABV),]
+
+#print the bottom 20
+head(ABVall, 20)
+
+#Tori
+```
+
+#### Highest IBU beer and the top and bottom IBU beers in the US:
+
+The beer with the highest International Bitterness Unit Score is also from Oregon, the Bitter Bitch Imperial IPA from the Astoria Brewing Company in Astoria, Oregon, with a score of 130. The next-most bitter beer is the Troopers Alley IPA, an American IPA from Wolf Hills Brewing Company in Abingdon, Virginia (135). Following Troopers Alley IPA is Dead-Eye DIPA, an American Double IPA from Cape Ann Brewing Company in Gloucester, Massachusetts (130), the Bay of Bengal Double IPA (2014) from Christian Moerlin Brewing Company in Cincinnati, Ohio (126), and the Heady Topper, another Imperial IPA from the Alchemist, a brewing company in Waterbury, Vermont (120).
+
+The beers tied for first place in the dataset with the lowest IBU, a score of 4, are Summer Solstice, Summer Solstice Cerveza Crema (2009), and Summer Solstice (2011) aaa Cream Ales from Anderson Brewing Company in Boonville, California. The next highest IBU is a score of 5, with five beers tied for second place. They are the a Berliner Weissbier, a Gose, a Tripel, a Fruit/Vegetable Beer, and another Gose, from San Antionio and Blanco, Texas, Fuquay-Variana, North Carolina, Davenport, Iowa, and Mount Pleasant, South Carolina, respectively. 
+
+It is important to note that only two of the top 20 most bitter beers in this dataset are not IPAs, while Wheat Ales, Goses, Weissbiers, and Cream Ales make up the majority of beers in the lowest 20 IBU list.
+
+A list of the top and bottom 20 beers can be seen below. Note that the top 20 are printed in reverse order, as they are reported in ascending size.
+
+* Note: A large portion (roughly 40%) of the beers are missing IBU information, so this data is only somewhat representative.
+
+#### The beer with the highest IBU score
+```{r Q5d, echo = TRUE}
+#Q4-7 done by Tori
+
+#print the max IBU beer (and its information) in the whole dataset
+master.file[which.max(master.file$IBU),]
+
+
+#Tori
+```
+
+#### The top 20 highest IBU beers, in reverse order
+```{r Q5e, echo = TRUE}
+#Q4-7 done by Tori
+
+#order all beers by IBU in ascending order, then ignore NA's only in the IBU column
+IBUall <- master.file[order(master.file$IBU),]
+IBUall <- IBUall[!is.na(IBUall$IBU),]
+
+#print the top 20 (reverse order)
+tail(IBUall, 20)
+
+#Tori
+```
+
+#### The bottom 20 IBU beers
+```{r Q5f, echo = TRUE}
+#Q4-7 done by Tori
+
+#order all beers by IBU in ascending order, then ignore NA's only in the IBU column
+IBUall <- master.file[order(master.file$IBU),]
+IBUall <- IBUall[!is.na(IBUall$IBU),]
+
+#print the bottom 20
+head(IBUall, 20)
+
+#Tori
+```
+
+#### Maximum IBU and ABV beers per state
+There are a few breweries and states that are represented multiple times in the maximum and minimum IBU and ABV top and bottom 20 lists. When each state's maximum alcohol-by-volume beer and most bitter beer are compared, we see slightly different results. 
+
+Colorado still has the beer with the highest alcohol by volume (.128), followed closely by the same Kentucky beer (.125), beer from Indiana (.120) and New York (.100). However, the bottom results change, because we are looking at the max per state. When ranking highest to lowest of the max per state, Delaware sits at the back of the pack with a max ABV of .055, followed by Arkansas (.061), Tennessee (.062), and New Hampshire (.065).
+
+When comparing the highest IBU by state, Oregon still has the highest rating of International Bitterness Units (IBU) compared to the other states (138), also followed closely by the same beers from Virginia (135), Massachussetts (130), and Ohio (126). Again, the rankings change when it comes to the lowest max IBU per state. The state with the lowest max IBU is Arkansas (39), followed by Delaware (52), Louisiana (60), and Tennessee (61), putting Tennessee and Arkansas in the bottom 5 for max Alcohol by volume as well as max International Bitterness Units. 
+
+A full list of the maximum IBU's and ABV's per state can be seen below.
+
+#### The maximum ABV values per state
+```{r Q5g, echo = TRUE}
+#Q4-7 done by Tori
+
 MaxABV <- aggregate(ABV~State, data=master.file, max)
 MaxABV <- MaxABV[order(MaxABV$ABV),]
 MaxABV
+
+#Tori
+```
+
+#### The maximum IBU values per state
+```{r Q5h, echo = TRUE}
+#Q4-7 done by Tori
 
 MaxIBU <- aggregate(IBU~State, data=master.file, max)
 MaxIBU <- MaxIBU[order(MaxIBU$IBU),]
@@ -386,16 +496,38 @@ MaxIBU
 ```
 
 ### What does the US climate look like concerning alcohol by volume?
-There were a somewhat wide range of ABV's in this dataset, from a .001 beer from California billed as a low-alcohol beer, to a much higher .128 Belgian-Style Quadruple beer from Colorado. The median ABV of the entire dataset is a .057 and the mean ABV is .06. The first and third quartiles, or the medians between the extremes and the mean, are .05 and .068 espectively, which means that a large portion of the beers in this dataset are between 5-6% alcohol by volume.
+There were a somewhat wide range of ABV's in this dataset, from a .001 beer from California billed as a low-alcohol beer, to a much higher .128 Belgian-Style Quadruple beer from Colorado. The median ABV of the entire dataset is a .057 and the mean ABV is .06. The first and third quartiles, or the medians between the extremes and the median, are .05 and .068 espectively, which means that a large portion of the beers in this dataset are between 5-6% alcohol by volume, which is a standard and common percentage in the US. For comparison, there are a total of 1363 beers in the dataset with an ABV between 4.9% and 7%, which is roughly 58% of the dataset, while there are a total of 407 beers with ABVs over 7%, which is only roughly 17% of the dataset.
 
 Of the 2366 beers in the dataset, 62 of them were missing ABV information, which is marginally small (roughly 2.6%). 
 
-```{r Q6, echo = TRUE}
+#### Summary statistics for the ABVs of the beers
+```{r Q6a, echo = TRUE}
 
+#get summary statistics for the ABV column
 summary(master.file$ABV)
 
 ```
 
+#### Count of the beers with ABVs higher than 7%
+```{r Q6b, echo = TRUE}
+
+#subset the beers with ABVs higher than 7% and do a count of rows
+higherABVcount <- subset(master.file, ABV < .13 & ABV > .070)
+nrow(higherABVcount)
+
+407/2366
+
+```
+
+#### Count of the beers between 5-7%
+```{r Q6c, echo = TRUE}
+
+mediumABVcount <- subset(master.file, ABV < .070 & ABV > .049)
+nrow(mediumABVcount)
+
+1363/2366
+
+```
 
 ### What does the median alcohol content & International Bitterness Units (IBU) for each state look like?
 While knowing which states have the highest possible ABV's or IBU's, it can also be helpful to see where their "median", or middle-of-the-pack values for each are.
@@ -414,6 +546,7 @@ The state with the highest median IBU is Maine, with 61. Following Maine in the 
 
 The states with the lowest median IBU are Wisconsin and Kansas, tied at 20. Following Wisconsin and Kansas is Arizona (20.5), Wyoming (21), and Hawaii (23). You can see these in a list below.
 
+#### The top 5 highest median IBU's
 ```{r, Q4b, echo=TRUE}
 #print the top and bottom five states for each category of IBU
 medianIBU <- medianIBUABV[,c(1,3)]
@@ -421,27 +554,47 @@ medianIBU <- medianIBU[order(medianIBU$IBU),]
 
 #these are the states with the top 5 highest median IBU's
 head(medianIBU, 5)
-#these are the states with the bottom 5 highest median IBU's
+
+```
+
+#### The top 5 lowest median IBU's, in reverse order
+```{r, Q4c, echo=TRUE}
+#print the top and bottom five states for each category of IBU
+medianIBU <- medianIBUABV[,c(1,3)]
+medianIBU <- medianIBU[order(medianIBU$IBU),]
+
+#these are the states with the bottom 5 highest median IBU's (printing 6 because one is an NA value)
 tail(medianIBU, 6)
 
 ```
-The states with the highest median ABV are Kentucky and Washington, D.C., with .063. Following Kentucky and DC in the top 5 medians per state are West Virginia, New Mexico, and Michigan, all tied (.062). 
+
+The states with the highest median ABV are Kentucky and Washington, D.C., with .063. Following Kentucky and DC in the top 5 median ABVs per state are West Virginia, New Mexico, and Michigan, all tied (.062). 
 
 The state with the lowest median ABV is Utah, with .04. Following Utah is New Jersey (.046), then Kansas, North Dakota, and Wyoming all tied with .05. You can see these in a list below.
 
-```{r, Q4c, echo=TRUE}
+#### The states with the top 5 median ABVs
+```{r, Q4d, echo=TRUE}
 #print the top and bottom five states for each category of ABV
 medianABV <- medianIBUABV[,c(1,2)]
 medianABV <- medianABV[order(medianABV$ABV),]
 
 #these are the states with the top 5 highest median ABV's
 head(medianABV, 5)
+```
+
+#### The states with the bottom 5 median ABVs, in reverse order
+```{r, Q4e, echo=TRUE}
+#print the top and bottom five states for each category of ABV
+medianABV <- medianIBUABV[,c(1,2)]
+medianABV <- medianABV[order(medianABV$ABV),]
+
 #these are the states with the bottom 5 highest median ABV's
 tail(medianABV, 5)
 ```
+
 Here is a visual snapshot of the differing median IBU and ABV values per state. These bar plots are ordered so that the largest values (of either ABV or IBU) are on the bottom, with the smallest on the top, to make viewing 50 state's worth of values simpler. Take note of the differing state's orders.
 
-```{r Q4d, echo = TRUE}
+```{r Q4f, echo = TRUE}
 #plot the following graphs side-by-side
 par(mfrow=c(1,2))
 
