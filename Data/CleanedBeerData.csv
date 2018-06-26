@@ -556,7 +556,7 @@
 "Peanut Butter Jelly Time",2446,0.058,NA,97,"American Brown Ale",12
 "King Coconut",2106,0.054,NA,97,"American Porter",12
 "Gone A-Rye",2600,0.085,90,30,"American Double / Imperial IPA",16
-"Special Release",2210,NA,NA,30,"",16
+"Special Release",2210,NA,NA,30,NA,16
 "Dankosaurus",2052,0.068,70,30,"American IPA",16
 "Scruffy's Smoked Alt",1584,0.051,35,30,"Smoked Beer",16
 "Elliott's Phoned Home Pale Ale",1182,0.051,36,30,"American Pale Ale (APA)",16
@@ -756,7 +756,7 @@
 "General George Patton Pilsner",1967,0.054,48,27,"Czech Pilsener",16
 "Nomader Weiss",2283,0.04,NA,174,"Berliner Weissbier",12
 "Molotov Lite",2248,0.085,NA,174,"American Double / Imperial IPA",16
-"Hipster Ale (Two Roads Brewing)",1287,0.055,NA,174,"American Pale Ale (APA)",12
+"Hipster Ale",1287,0.055,NA,174,"American Pale Ale (APA)",12
 "Bikini Beer",1286,0.027,NA,174,"American IPA",12
 "Iron Horse Pale Ale",1722,0.05,32,336,"American Pale Ale (APA)",12
 "Stone's Throw IPA",1435,0.045,19,336,"Scottish Ale",12
@@ -840,7 +840,7 @@
 "The Gadget",2610,0.064,90,23,"American IPA",16
 "Leprechaun Lager",1657,0.04,NA,349,"American Pale Lager",12
 "Sunbru Kölsch",2309,0.052,17,161,"Kölsch",12
-"Kilt Lifter Scottish-Style Ale",1635,0.06,21,161,"",12
+"Kilt Lifter Scottish-Style Ale",1635,0.06,21,161,NA,12
 "Pumpkin Porter",1616,0.051,NA,161,"American Porter",12
 "Four Peaks Peach Ale",1585,0.042,9,161,"Fruit / Vegetable Beer",12
 "Hop Knot IPA",358,0.067,47,161,"American IPA",12
@@ -853,7 +853,7 @@
 "Old Detroit",1998,0.056,NA,254,"American Amber / Red Ale",12
 "Batch 69 IPA",1556,0.069,69,254,"American IPA",12
 "Twisted Helles Summer Lager",1208,0.055,18,254,"Munich Helles Lager",12
-"OktoberFiesta",2527,0.053,27,67,"",12
+"OktoberFiesta",2527,0.053,27,67,NA,12
 "Texicali ",2526,0.065,33,67,"American Brown Ale",12
 "Pinata Protest",2525,0.06,NA,67,"Witbier",12
 "Bat Outta Helles",2524,0.042,20,67,"Munich Helles Lager",12
@@ -1525,8 +1525,8 @@
 "Pinner Throwback IPA",2302,0.049,35,167,"American IPA",12
 "Centennial State Pale Ale",1883,0.052,NA,167,"American Pale Ale (APA)",19.2
 "Old Chub NITRO",1859,0.08,NA,167,"Scotch Ale / Wee Heavy",16
-"The CROWLER™",1796,NA,NA,167,"",32
-"CAN'D AID Foundation",1790,NA,NA,167,"",12
+"The CROWLER™",1796,NA,NA,167,NA,32
+"CAN'D AID Foundation",1790,NA,NA,167,NA,12
 "Icey.P.A.",1752,NA,NA,167,"American IPA",16
 "One Nut Brown",1751,0.05,NA,167,"English Brown Ale",12
 "Birth IPA",1750,NA,NA,167,"American IPA",12

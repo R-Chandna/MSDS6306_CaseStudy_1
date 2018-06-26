@@ -29,7 +29,7 @@ The dataset was parsed for duplicate beers and breweries, which were deleted, an
 ```r
 #Tidying of Beers:
 #read in Beers data set with correct character formatting.
-Beers <- read.csv("./Data/Beers.csv", header=TRUE, fileEncoding = 'UTF-8', stringsAsFactors = F)
+Beers <- read.csv("./Data/Beers.csv", header=TRUE, fileEncoding = 'UTF-8')
 ```
 
 
@@ -127,6 +127,11 @@ levels(UniqueBeers$Name)[levels(UniqueBeers$Name) == "Hipster Ale (Two Roads Bre
 ```r
 #Add code to change Brewery_ID column to match the Brews file and create CSV output of clean data.
 colnames(UniqueBeers)[colnames(UniqueBeers)=="Brewery_id"] <- "Brew_ID"
+```
+
+```r
+#Rename missing values / blanks to NA for Style Column.
+UniqueBeers$Style[UniqueBeers$Style == ""] <- NA
 
 #Write Clean File
 write.csv(UniqueBeers, file="./Data/CleanedBeerData.csv", row.names = F)
@@ -930,7 +935,7 @@ colSums(is.na(master.file))
 ##   Brewery_id    Beer_name      Beer_id          ABV          IBU 
 ##            0            0            0           62          997 
 ##        Style       Ounces Brewery_name         City        State 
-##            0            0            0            0            0
+##            5            0            0            0            0
 ```
 
 ```r
