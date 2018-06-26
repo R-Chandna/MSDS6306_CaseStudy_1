@@ -23,7 +23,7 @@
 		* Breweries: Rajat and Andy
 	* R-code for questions:
 		* 1  : Jodi and Andy
-		* 2-3: Jodi
+		* 2-3: Andy
 		* 4-7: Tori
 	* Presentation:
 		* Created by Jodi with help from Tori
