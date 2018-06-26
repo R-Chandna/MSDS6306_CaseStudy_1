@@ -49,7 +49,16 @@
 * Beers.csv is UTF-8 encoded
 	* Some beer names included year of production, these beers are assumed to be different from beers with the same name but no production year
 	* Duplicates removed, the criteria for removal is that all variables except Beer_ID matched.
-		* Additionally Ranger IPA (Current), Shift (1), Point Special (Current), Cherry Ale (1), Pleasure Town, Farmer Ted's Cream Ale, Dry Cider, Abbey's Single (2015- ), Triomphe, Bender, and Hipster Ale (Westbrook Brewing) were found to be duplicates of other beers but with Name field slightly different, these beers were also removed.
+		* Additionally Ranger IPA (Current)
+		* Shift (1)
+		* Point Special (Current)
+		* Cherry Ale (1)
+		* Pleasure Town
+		* Farmer Ted's Cream Ale
+		* Dry Cider, Abbey's Single (2015- )
+		* Triomphe, Bender
+		* Hipster Ale (Westbrook Brewing) <br /> 
+		were found to be duplicates of other beers but with Name field slightly different, these beers were also removed.
 		* Hipster Ale (Two Roads Brewing) was renamed to Hipster Ale because Two Roads Brewing does not brew this beer
 	* Cleaned file is output to "CleanedBeerData.csv"
 
