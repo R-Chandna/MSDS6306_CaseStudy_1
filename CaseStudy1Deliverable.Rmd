@@ -27,7 +27,7 @@ The dataset was parsed for duplicate beers and breweries, which were deleted, an
 ```{r beer, eco=TRUE}
 #Tidying of Beers:
 #read in Beers data set with correct character formatting.
-Beers <- read.csv("./Data/Beers.csv", header=TRUE, fileEncoding = 'UTF-8', stringsAsFactors = F)
+Beers <- read.csv("./Data/Beers.csv", header=TRUE, fileEncoding = 'UTF-8')
 ```
 
 ```{r}
