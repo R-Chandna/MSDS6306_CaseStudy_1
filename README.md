@@ -55,48 +55,51 @@
 
 #### CODEBOOK FOR CRAFT BEERS DATASET
 
-VARIABLE NAME 	- POSITION 	- VARIABLE<br /> 				- 
-Name		- 1		- Name of beer<br />	
-Beer_ID		- 2 		- Beer's ID number<br />	
-ABV		- 3		- Alcohol by volume<br />	
-IBU		- 4		- International bitterness units<br />	
-Breweriy_id   	- 5		- Beer's brewery's ID<br />	
-Style	 	- 6		- Style of beer<br />	
-Ounces	 	- 7		- Volume of beer per bottle in ounces<br />	
+|VARIABLE NAME|POSITION|VARIABLE|
+|:-|:-:|-:|
+|Name|1|Name of beer|
+|Beer_ID|2|Beer's ID number|	
+|ABV|3|Alcohol by volume|	
+|IBU|4|International bitterness units|	
+|Breweriy_id|5|Beer's brewery's ID|	
+|Style|6|Style of beer|
+|Ounces|7|Volume of beer per bottle in ounces|	
 
 ### INFORMATION ON US BREWERIES DATASET (Breweries.csv)
-	* 51 states:  50 US states plus Washington DC
-	* Trimmed whitespaces infront of all State initials
-	* Abbreviation of city names were expanded
-	* Mispellings were corrected
-	* Marquette was listed in MA, corrected to MI
-		* "Against the Grain Brewery" changed to "Against The Grain Brewery"
-		* "Grey Sail Brewing of Rhode Island" changed to "Grey Sail Brewing Company"
-		* "Hops & Grains Brewing Company", "Name"] changed to "Hops & Grain Brewery"
-		* "Goose Island Brewery Company", "Name"] changed to "Goose Island Brewing Company"
-		* "Goodlife Brewing Co.", "Name"] changed "Good Life Brewing Company"
-		* "Catawba Brewing Company", "Name"] changed to "Catawba Valley Brewing Company"
-		* Angry Minnow", "Name"] <- "Angry Minnow Brewing Company"
-	* Cleaned file is ouput to "CleanedBreweryData.csv"
+* 51 states:  50 US states plus Washington DC
+* Trimmed whitespaces infront of all State initials
+* Abbreviation of city names were expanded
+* Mispellings were corrected
+* Marquette was listed in MA, corrected to MI
+	* "Against the Grain Brewery" changed to "Against The Grain Brewery"
+	* "Grey Sail Brewing of Rhode Island" changed to "Grey Sail Brewing Company"
+	* "Hops & Grains Brewing Company", "Name"] changed to "Hops & Grain Brewery"
+	* "Goose Island Brewery Company", "Name"] changed to "Goose Island Brewing Company"
+	* "Goodlife Brewing Co.", "Name"] changed "Good Life Brewing Company"
+	* "Catawba Brewing Company", "Name"] changed to "Catawba Valley Brewing Company"
+	* Angry Minnow", "Name"] <- "Angry Minnow Brewing Company"
+* Cleaned file is ouput to "CleanedBreweryData.csv"
 
 #### CODEBOOK FOR BREWERIES DATASET:
 
-VARIABLE NAME 	- POSITION 	- VARIABLE<br />
-Brew_ID		- 1		- Brewery's ID<br />
-Name		- 2		- Name of brewery<br />
-City		- 3		- City of brewery's location<br />
-State		- 4		- State of brewery's locaion (in standard post office state abbreviations)<br />
+|VARIABLE NAME|POSITION|VARIABLE|
+|:-|:-:|-:|
+|Brew_ID|1|Brewery's ID|
+|Name|2|Name of brewery|
+|City|3|City of brewery's location|
+|State|4|State of brewery's locaion (in standard post office state abbreviations)|
 
 ### CODEBOOK FOR MERGED BEERS and BREWERY DATA (masterfile.csv)
 
-VARIABLE NAME 	- POSITION 	- VARIABLE<br />
-Brewwery_id	- 1		- Brewery's ID<br />
-Beer_name	- 2		- Name of beer<br />
-Beer_id		- 3 		- Beer's ID number<br />
-ABV		- 4		- Alcohol by volume<br />
-IBU		- 5		- International bitterness units<br />
-Style	 	- 6		- Style of beer<br />
-Ounces	 	- 7		- Volume of beer per bottle in ounces<br />
-Brewery_name	- 8		- Name of brewery<br />
-City		- 9		- City of brewery's location<br />
-State		- 10		- State of brewery's locaion (in standard post office state abbreviations)<br />
+|VARIABLE NAME|POSITION|VARIABLE|
+|:-|:-:|-:|
+|Brewwery_id|1|Brewery's ID|
+|Beer_name|2|Name of beer|
+|Beer_id|3|Beer's ID number|
+|ABV|4|Alcohol by volume|
+|IBU|5|International bitterness units|
+|Style|6|Style of beer|
+|Ounces|7|Volume of beer per bottle in ounces|
+|Brewery_name|8|Name of brewery|
+|City|9|City of brewery's location|
+|State|10|State of brewery's locaion (in standard post office state abbreviations)|
