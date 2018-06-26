@@ -141,7 +141,7 @@ $(document).ready(function () {
 <h5>Beers File Tidying</h5>
 <pre class="r"><code>#Tidying of Beers:
 #read in Beers data set with correct character formatting.
-Beers &lt;- read.csv(&quot;./Data/Beers.csv&quot;, header=TRUE, fileEncoding = 'UTF-8', stringsAsFactors = F)</code></pre>
+Beers &lt;- read.csv(&quot;./Data/Beers.csv&quot;, header=TRUE, fileEncoding = 'UTF-8')</code></pre>
 <pre class="r"><code>#Remove duplicate beers if ALL columns but the Beer ID are the same. 
 UniqueBeers &lt;- Beers[!duplicated(Beers[c(1,3,4,5,6,7)]),]</code></pre>
 <pre class="r"><code>#commented out, no longer needed after first run.
@@ -223,7 +223,9 @@ UniqueBeers &lt;- subset(UniqueBeers, Name != &quot;Hipster Ale (Westbrook Brewi
 #rename Hipster Ale (Two Roads Brewing) to Hipster Ale; Two Roads Brewing does not brew Hipster Ale
 levels(UniqueBeers$Name)[levels(UniqueBeers$Name) == &quot;Hipster Ale (Two Roads Brewing)&quot;] = &quot;Hipster Ale&quot;</code></pre>
 <pre class="r"><code>#Add code to change Brewery_ID column to match the Brews file and create CSV output of clean data.
-colnames(UniqueBeers)[colnames(UniqueBeers)==&quot;Brewery_id&quot;] &lt;- &quot;Brew_ID&quot;
+colnames(UniqueBeers)[colnames(UniqueBeers)==&quot;Brewery_id&quot;] &lt;- &quot;Brew_ID&quot;</code></pre>
+<pre class="r"><code>#Rename missing values / blanks to NA for Style Column.
+UniqueBeers$Style[UniqueBeers$Style == &quot;&quot;] &lt;- NA
 
 #Write Clean File
 write.csv(UniqueBeers, file=&quot;./Data/CleanedBeerData.csv&quot;, row.names = F)</code></pre>
@@ -901,7 +903,7 @@ colSums(is.na(master.file))</code></pre>
 <pre><code>##   Brewery_id    Beer_name      Beer_id          ABV          IBU 
 ##            0            0            0           62          997 
 ##        Style       Ounces Brewery_name         City        State 
-##            0            0            0            0            0</code></pre>
+##            5            0            0            0            0</code></pre>
 <pre class="r"><code>62/2410</code></pre>
 <pre><code>## [1] 0.02572614</code></pre>
 <pre class="r"><code>997/2410</code></pre>

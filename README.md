@@ -22,21 +22,22 @@
 		* Beers: An, Jodi, some help from Tori
 		* Breweries: Rajat and Andy
 	* R-code for questions:
-		* 1-2: Andy
-		* 3  : Jodi and Andy
+		* 1  : Jodi and Andy
+		* 2-3: Jodi
 		* 4-7: Tori
 	* Presentation:
 		* Created by Jodi with help from Tori
+		
 * For the presentation:
 	* Intro: Tori
 	* Tidying data process:
 		* Beers: An and Jodi
 		* Breweries: Rajat and Andy
 	* Answers to Questions:
-		* 1-2: Andy
-		* 3  : Jodi
+		* 1  : Jodi
+		* 2-3: Andy
 		* 4-7: Tori
-	* Closing and Q&A: Jodi
+	* Summary and Q&A: Jodi
 
 ## Project Details
 * The "story" created to go with this project was that TAJAR, Inc., our imaginary data company, was tasked with helping Brewing Bros, an international brewing company looking to expand to the US, to learn more about the US beer brewing market, about the beers that are popular, and get suggestions on where to set up their next brewery and suggestions on beers to feature in that brewery. 

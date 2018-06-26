@@ -122,6 +122,10 @@ levels(UniqueBeers$Name)[levels(UniqueBeers$Name) == "Hipster Ale (Two Roads Bre
 ```{r}
 #Add code to change Brewery_ID column to match the Brews file and create CSV output of clean data.
 colnames(UniqueBeers)[colnames(UniqueBeers)=="Brewery_id"] <- "Brew_ID"
+```
+```{r}
+#Rename missing values / blanks to NA for Style Column.
+UniqueBeers$Style[UniqueBeers$Style == ""] <- NA
 
 #Write Clean File
 write.csv(UniqueBeers, file="./Data/CleanedBeerData.csv", row.names = F)
