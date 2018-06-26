@@ -1194,7 +1194,7 @@ head(ABVall, 20)
 ## 654          American Pilsner     12 Woodstock Inn, Station & Brewery
 ## 338    Fruit / Vegetable Beer     16              Sixpoint Craft Ales
 ## 748               Light Lager     12                   Straub Brewery
-## 2295                   KÃ¶lsch     12        Asheville Brewing Company
+## 2295                   Kölsch     12        Asheville Brewing Company
 ## 1957       Berliner Weissbier     12      New England Brewing Company
 ## 292                      Gose     16      Rising Tide Brewing Company
 ## 412        Berliner Weissbier     12          4 Hands Brewing Company

@@ -18,6 +18,7 @@
 
 ## Member Assignments
 * For the preparation:
+	* Github Organization: An with Rajat's assistance
 	* Data Tidyng: with Rajat's assistance
 		* Beers: An, Jodi, some help from Tori
 		* Breweries: Rajat and Andy
